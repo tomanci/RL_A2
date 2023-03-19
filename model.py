@@ -24,4 +24,5 @@ class DQN:
         return self.model(x)
 
     def compute_loss(self, output, target):
+        # return (target - output).pow(2).sum()
         return self.criterion(output, target)

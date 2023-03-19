@@ -1,5 +1,5 @@
 import gymnasium as gym
-import numpy as np
+import numpy
 import torch
 from model import DQN
 from e_greedy import epsilon_greedy
@@ -13,28 +13,42 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 print(f"Using {device} device")
 
 
-def record_episode(env, q_net, epsilon, gamma=0.99):
-    s, info = env.reset()
-    terminated = False
-    states = [s]
-    targets = []
+def record_episode(env, q_net, epsilon, gamma=0.9):
+    batch_size = 10
 
-    while not terminated:
-        q_sa = q_net.forward_pass_no_grad(s).numpy()
-        a = epsilon_greedy(q_sa, epsilon)  # Select an action
-        sp, reward, terminated, truncated, info = env.step(a)  # Take the step
+    for epoch in range(MAX_EPOCHS):
+        s, info = env.reset()
+        terminated = False
+        states = []
+        targets = []
+        step = 0
 
-        q_spa = q_net.forward_pass_no_grad(sp)
-        target = reward + gamma * torch.max(q_spa).item()
-        q_sa[a] = target
+        while not terminated:
+            q_sa = q_net.forward_pass_no_grad(s).numpy()
+            a = epsilon_greedy(q_sa, epsilon)  # Select an action
+            sp, reward, terminated, truncated, info = env.step(a)  # Take the step
 
-        states.append(sp)
-        targets.append(q_sa)
+            q_spa = q_net.forward_pass_no_grad(sp)
+            target = reward + gamma * torch.max(q_spa).item()
+            q_sa[a] = target
 
-        s = sp
+            states.append(numpy.copy(s))
+            targets.append(q_sa)
 
-        if truncated:
-            break
+            s = sp
+            step += 1
+            epsilon *= EPSILON_DECAY
+
+            if truncated or terminated:
+                break
+
+            if step % batch_size == 0:
+                model_input = torch.tensor(states)
+                model_targets = torch.tensor(targets)
+                loss = train_model(model_input, model_targets)
+                # print(f"Loss: {loss}")
+                states = []
+                targets = []
 
     return states, targets
 
@@ -75,4 +89,4 @@ def train_qlearn(env, q_net, alpha=0.001, gamma=1.0, epsilon=0.3):
 
 q_net = DQN()
 
-train_qlearn(environment, q_net)
+record_episode(environment, q_net, epsilon=0.6)
