@@ -2,9 +2,23 @@ import gymnasium as gym
 import numpy as np
 from transition import Transition
 from agent import DQNAgent
+import argparse
+
+
+use_experience_replay = False
+use_target_network = False
+
+parser = argparse.ArgumentParser(description="My parser")
+parser.add_argument('--experience-replay', dest='use_experience_replay', action='store_true')
+parser.add_argument('--target-network', dest='use_target_network', action='store_true')
+args = parser.parse_args()
 
 environment = gym.make("CartPole-v1")
-use_experience_replay = True
+
+experience_replay = args.use_experience_replay
+target_network = args.use_target_network
+
+print(f"Starting DQN, experience-replay: {experience_replay}, target-network: {target_network}")
 
 MAX_EPOCHS = 1000
 
@@ -38,10 +52,9 @@ def perform_an_episode(agent, env):
         if truncated:
             break
 
-    agent.train_agent(flush_buffer=True)
-    agent.decay_epsilon()
+    agent.on_epoch_ended()
 
     return rewards
 
 
-train_agent_on_env(DQNAgent(use_replay_buffer=use_experience_replay), environment)
+train_agent_on_env(DQNAgent(use_replay_buffer=experience_replay, use_target_network=target_network), environment)

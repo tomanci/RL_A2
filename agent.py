@@ -10,6 +10,7 @@ class DQNAgent:
 
     def __init__(self, use_replay_buffer=False, use_target_network=False):
         self.q_net = DQN()
+        self.target_q_net = deepcopy(self.q_net)
         self.epsilon = 0.6
         self.epsilon_decay = 0.99
         self.gamma = 0.90
@@ -25,7 +26,11 @@ class DQNAgent:
         self.current_state_value = self.q_net.forward_pass_no_grad(current_state).numpy()
 
     def select_action_for_state(self, state):
-        q_sa = self.q_net.forward_pass_no_grad(state).numpy()
+        if self.use_target_network:
+            q_sa = self.target_q_net.forward_pass_no_grad(state).numpy()
+        else:
+            q_sa = self.q_net.forward_pass_no_grad(state).numpy()
+
         return epsilon_greedy(q_sa, epsilon=self.epsilon)
 
     def get_state_q_value(self, state):
@@ -45,7 +50,7 @@ class DQNAgent:
 
     def train_agent(self, flush_buffer=False):
         if self.use_replay_buffer and self.replay_buffer.size() < self.sampling_rate:
-            print("[ERROR]: Buffer size is less than the sampling rate")
+            print("[WARNING]: Buffer size is less than the sampling rate")
             return
 
         if self.use_replay_buffer:
@@ -81,6 +86,12 @@ class DQNAgent:
         self.q_net.optimizer.step()
 
         return loss.item()
+
+    def on_epoch_ended(self):
+        self.train_agent(flush_buffer=True)
+        self.decay_epsilon()
+        if self.use_target_network:
+            self.target_q_net = deepcopy(self.q_net)
 
     def decay_epsilon(self):
         self.epsilon = max(0.01, self.epsilon * self.epsilon_decay)
