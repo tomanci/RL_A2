@@ -5,9 +5,6 @@ from agent import DQNAgent
 import argparse
 
 
-use_experience_replay = False
-use_target_network = False
-
 parser = argparse.ArgumentParser(description="My parser")
 parser.add_argument('--experience-replay', dest='use_experience_replay', action='store_true')
 parser.add_argument('--target-network', dest='use_target_network', action='store_true')
