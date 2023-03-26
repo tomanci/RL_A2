@@ -1,5 +1,6 @@
 import yaml
 
+EPOCHS_KEY = "epochs"
 EPSILON_KEY = "epsilon"
 EPSILON_DECAY_KEY = "epsilon_decay"
 ALPHA_KEY = "alpha"
@@ -10,7 +11,8 @@ BUFFER_SIZE_KEY = "buffer-size"
 
 class Config:
 
-    def __init__(self, epsilon, alpha, epsilon_decay, gamma, sampling_rate, buffer_size):
+    def __init__(self, epochs, epsilon, alpha, epsilon_decay, gamma, sampling_rate, buffer_size):
+        self.epochs = epochs
         self.epsilon = epsilon
         self.epsilon_decay = epsilon_decay
         self.alpha = alpha
@@ -20,6 +22,7 @@ class Config:
 
 
 defaultConfig = Config(
+    epochs=1000,
     epsilon=0.3,
     epsilon_decay=0.99,
     alpha=0.001,
@@ -32,11 +35,12 @@ defaultConfig = Config(
 def load_from_yaml(file_path):
     with open(file_path, 'r') as yamlfile:
         data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-        return Config(
-            epsilon=data[EPSILON_KEY] if EPSILON_KEY in data else defaultConfig.epsilon,
-            epsilon_decay=data[EPSILON_DECAY_KEY] if EPSILON_DECAY_KEY in data else defaultConfig.epsilon_decay,
-            alpha=data[ALPHA_KEY] if ALPHA_KEY in data else defaultConfig.alpha,
-            gamma=data[GAMMA_KEY] if GAMMA_KEY in data else defaultConfig.gamma,
-            sampling_rate=data[SAMPLING_RATE_KEY] if SAMPLING_RATE_KEY in data else defaultConfig.sampling_rate,
-            buffer_size=data[BUFFER_SIZE_KEY] if BUFFER_SIZE_KEY in data else defaultConfig.sampling_rate
-        )
+    return Config(
+        epochs=data[EPOCHS_KEY] if EPOCHS_KEY in data else defaultConfig.epochs,
+        epsilon=data[EPSILON_KEY] if EPSILON_KEY in data else defaultConfig.epsilon,
+        epsilon_decay=data[EPSILON_DECAY_KEY] if EPSILON_DECAY_KEY in data else defaultConfig.epsilon_decay,
+        alpha=data[ALPHA_KEY] if ALPHA_KEY in data else defaultConfig.alpha,
+        gamma=data[GAMMA_KEY] if GAMMA_KEY in data else defaultConfig.gamma,
+        sampling_rate=data[SAMPLING_RATE_KEY] if SAMPLING_RATE_KEY in data else defaultConfig.sampling_rate,
+        buffer_size=data[BUFFER_SIZE_KEY] if BUFFER_SIZE_KEY in data else defaultConfig.sampling_rate
+    )
