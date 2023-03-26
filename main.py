@@ -1,10 +1,13 @@
 import gymnasium as gym
 import numpy as np
-from transition import Transition
-from agent import DQNAgent
-from config import Config, defaultConfig, load_from_yaml
 from tqdm import tqdm
 import argparse
+
+from transition import Transition
+from agent import DQNAgent
+from config import Config, load_from_yaml
+from e_greedy import EpsilonGreedy
+from boltzmann import Boltzmann
 
 
 def train_agent_on_env(agent, env, n_epochs):
@@ -49,22 +52,31 @@ def read_cli_args():
 def run(config: Config, experience_replay: bool, target_network: bool):
     environment = gym.make("CartPole-v1")
     print(f"Starting DQN, experience-replay: {experience_replay}, target-network: {target_network}")
- 
+    
+    match config.policy:
+        case "epsilon_greedy":
+            action_selection_policy = EpsilonGreedy(config.epsilon)
+        case "boltzmann":
+            action_selection_policy = Boltzmann(config.temp)
+        case policy:
+            raise NotImplementedError(f"Policy '{policy}' is not implemented")
+
     agent = DQNAgent(
         config=config,
+        action_selection_policy=action_selection_policy,
         use_replay_buffer=experience_replay,
         use_target_network=target_network
     )
 
     rewards = list(train_agent_on_env(agent, environment, config.epochs))
-    print(f"Average reward: {np.mean(rewards)}, average over last 100: {np.mean(rewards[-100:])}")
+    print(f"Average reward: {np.mean(rewards)}, average over last 100 epochs: {np.mean(rewards[-100:])}")
 
 
 
 def main():
     args = read_cli_args()
     config_file_path = args.config_file
-    config = load_from_yaml(config_file_path) if config_file_path != "" else defaultConfig
+    config = load_from_yaml(config_file_path) if config_file_path != "" else Config()
 
     run(config, args.use_experience_replay, args.use_target_network)
 

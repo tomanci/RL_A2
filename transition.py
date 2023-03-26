@@ -1,8 +1,12 @@
-class Transition:
+from dataclasses import dataclass
 
-    def __init__(self, state, action, reward, next_state, terminated):
-        self.state = state
-        self.action = action
-        self.reward = reward
-        self.next_state = next_state
-        self.terminated = terminated
+import numpy as np
+
+
+@dataclass(frozen=True)
+class Transition:
+    state: np.ndarray
+    action: int
+    reward: int
+    next_state: np.ndarray
+    terminated: bool

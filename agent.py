@@ -1,34 +1,39 @@
-import numpy as np
+from typing import List
 import torch
 from copy import deepcopy
+from config import Config
 from model import DQN
-from e_greedy import epsilon_greedy
 from replay_buffer import ReplayBuffer
+from transition import Transition
+from action_slection import ActionSlection
+
 
 
 class DQNAgent:
 
-    def __init__(self, config, use_replay_buffer=False, use_target_network=False):
+    def __init__(self, config: Config, action_selection_policy: ActionSlection,  use_replay_buffer=False, use_target_network=False):
         self.config = config
-        self.q_net = DQN(alpha=self.config.alpha)
+        self.q_net = DQN(alpha=self.config.learning_rate)
         self.target_q_net = deepcopy(self.q_net)
         self.replay_buffer = ReplayBuffer(self.config.buffer_size)
-        self.transition_buffer = []
+        self.transition_buffer: List[Transition] = []
         self.use_replay_buffer = use_replay_buffer
         self.use_target_network = use_target_network
 
+        self.action_selection_policy = action_selection_policy
+        
     def select_action_for_state(self, state):
         if self.use_target_network:
             q_sa = self.target_q_net.forward_pass_no_grad(state).numpy()
         else:
             q_sa = self.q_net.forward_pass_no_grad(state).numpy()
 
-        return epsilon_greedy(q_sa, epsilon=self.config.epsilon)
+        return self.action_selection_policy.select_action(q_sa)
 
     def get_state_q_value(self, state):
         return self.q_net.forward_pass_no_grad(state).numpy()
 
-    def calculate_target(self, transition):
+    def calculate_target(self, transition: Transition):
         next_state_value = self.get_state_q_value(transition.next_state)
         current_state_value = self.get_state_q_value(transition.state)
 
@@ -55,7 +60,7 @@ class DQNAgent:
             self.train_with_transitions(self.transition_buffer)
             self.transition_buffer = []
 
-    def train_with_transitions(self, transitions):
+    def train_with_transitions(self, transitions: List[Transition]):
         batch_states = []
         batch_targets = []
 
@@ -81,12 +86,10 @@ class DQNAgent:
 
     def on_epoch_ended(self):
         self.train_agent(flush_buffer=True)
-        self.decay_epsilon()
+        self.action_selection_policy.decay()
         if self.use_target_network:
             self.target_q_net = deepcopy(self.q_net)
 
-    def decay_epsilon(self):
-        self.config.epsilon = max(0.01, self.config.epsilon * self.config.epsilon_decay)
 
     def store_transition(self, transition):
         if self.use_replay_buffer:

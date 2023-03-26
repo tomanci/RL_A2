@@ -1,46 +1,39 @@
-import yaml
+from dataclasses import dataclass
+import dataconf
 
-EPOCHS_KEY = "epochs"
-EPSILON_KEY = "epsilon"
-EPSILON_DECAY_KEY = "epsilon_decay"
-ALPHA_KEY = "alpha"
-GAMMA_KEY = "gamma"
-SAMPLING_RATE_KEY = "sampling-rate"
-BUFFER_SIZE_KEY = "buffer-size"
+@dataclass
+class ArchitectureConfig:
+    general_style: str = "Fully connected NN"
+    hidden_layers: int = 2
+    hidden_layer_initial_size: int = 64
+    hidden_layer_scaling: float = 2.0
+    activation_function: str = "ReLu"
 
+@dataclass
+class EpsilonConfig:
+    initial: float = 0.2
+    decay: float = 0.99
+    min: float = 0.01
 
+@dataclass
+class TempConfig:
+    initial: float = 0.1
+    decay: float = 0.99
+    min: float = 0.05
+
+@dataclass
 class Config:
-
-    def __init__(self, epochs, epsilon, alpha, epsilon_decay, gamma, sampling_rate, buffer_size):
-        self.epochs = epochs
-        self.epsilon = epsilon
-        self.epsilon_decay = epsilon_decay
-        self.alpha = alpha
-        self.gamma = gamma
-        self.sampling_rate = sampling_rate
-        self.buffer_size = buffer_size
-
-
-defaultConfig = Config(
-    epochs=1000,
-    epsilon=0.3,
-    epsilon_decay=0.99,
-    alpha=0.001,
-    gamma=0.90,
-    sampling_rate=2,
-    buffer_size=int(10e5)
-)
+    architecture: ArchitectureConfig = ArchitectureConfig()
+    learning_rate: float = 0.001
+    epochs: int = 1000
+    sampling_rate: int = 2
+    buffer_size: int = 100000
+    policy: str = "epsilon_greedy"
+    epsilon: EpsilonConfig = EpsilonConfig()
+    temp: TempConfig = TempConfig()
+    gamma: float = 0.9
 
 
-def load_from_yaml(file_path):
-    with open(file_path, 'r') as yamlfile:
-        data = yaml.load(yamlfile, Loader=yaml.FullLoader)
-    return Config(
-        epochs=data[EPOCHS_KEY] if EPOCHS_KEY in data else defaultConfig.epochs,
-        epsilon=data[EPSILON_KEY] if EPSILON_KEY in data else defaultConfig.epsilon,
-        epsilon_decay=data[EPSILON_DECAY_KEY] if EPSILON_DECAY_KEY in data else defaultConfig.epsilon_decay,
-        alpha=data[ALPHA_KEY] if ALPHA_KEY in data else defaultConfig.alpha,
-        gamma=data[GAMMA_KEY] if GAMMA_KEY in data else defaultConfig.gamma,
-        sampling_rate=data[SAMPLING_RATE_KEY] if SAMPLING_RATE_KEY in data else defaultConfig.sampling_rate,
-        buffer_size=data[BUFFER_SIZE_KEY] if BUFFER_SIZE_KEY in data else defaultConfig.sampling_rate
-    )
+def load_from_yaml(file_path: str):
+    config = dataconf.file(file_path, Config)
+    return config

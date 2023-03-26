@@ -1,7 +1,20 @@
+architecture:
+  general_style: "Fully connected NN"
+  hidden_layers: 2
+  hidden_layer_initial_size: 64
+  hidden_layer_scaling: 2.0
+  activation_function: "ReLu"
+learning_rate: 0.001
 epochs: 1000
-epsilon: 0.3
-epsilon-decay: 0.99
-alpha: 0.001
+policy: "epsilon_greedy"
+epsilon:
+  initial: 0.2
+  decay: 0.99
+  min: 0.01
+temp:
+  initial: 0.1
+  decay: 0.99
+  min: 0.05
 gamma: 0.9
-sampling-rate: 2
+sampling_rate: 2
 buffer-size: 1000000
