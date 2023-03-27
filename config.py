@@ -1,4 +1,7 @@
 from dataclasses import dataclass
+
+import numpy as np
+from numpy import ndarray
 import dataconf
 
 @dataclass
@@ -24,6 +27,7 @@ class TempConfig:
 @dataclass
 class Config:
     architecture: ArchitectureConfig = ArchitectureConfig()
+    nn_architecture: list[int] = list[1, 1, 1, 1]
     learning_rate: float = 0.001
     epochs: int = 1000
     sampling_rate: int = 2

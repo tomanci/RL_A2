@@ -7,10 +7,10 @@ import torch.nn as nn
 
 class DQN:
 
-    def __init__(self, alpha=0.0001):
+    def __init__(self, nn_architecture, alpha=0.0001):
         self.device = "cuda" if torch.cuda.is_available() else "cpu"
         print(f"Device: {self.device}")
-        self.model = NeuralNetwork().to(self.device)
+        self.model = NeuralNetwork(nn_architecture).to(self.device)
         self.criterion = nn.MSELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=alpha)
 

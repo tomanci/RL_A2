@@ -13,7 +13,7 @@ class DQNAgent:
 
     def __init__(self, config: Config, action_selection_policy: ActionSlection,  use_replay_buffer=False, use_target_network=False):
         self.config = config
-        self.q_net = DQN(alpha=self.config.learning_rate)
+        self.q_net = DQN(nn_architecture=self.config.nn_architecture, alpha=self.config.learning_rate)
         self.target_q_net = deepcopy(self.q_net)
         self.replay_buffer = ReplayBuffer(self.config.buffer_size)
         self.transition_buffer: List[Transition] = []
