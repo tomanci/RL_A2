@@ -81,7 +81,7 @@ def perform_experiment(config_file_path, config, use_experience_replay, use_targ
         rewards[i] = experiment_rewards
 
     data = asarray(rewards)
-    file_name = 'configs/' + config_file_path.split('.')[0]
+    file_name = 'results/' + config_file_path.split('/')[-1].split('.')[0]
     save(file_name, data)
 
 
