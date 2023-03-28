@@ -76,7 +76,7 @@ parameters:
     values:
       - [4,16,16,2] # 1 hidden layer
       - [4,128,128,2] # 1 hidden layer
-      - [4,16,32,32,16,2] # 2 hidden layer
+      - [4,16,16,32,32,2] # 2 hidden layer
       - [4,128,128,128,128,2] # 2 hidden layer
       - [4,16,16,32,32,16,16,2] # 3 hidden layers
       - [4,32,32,64,64,32,32,2] # 3 hidden layers
