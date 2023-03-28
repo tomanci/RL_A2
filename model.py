@@ -8,7 +8,9 @@ import torch.nn as nn
 class DQN:
 
     def __init__(self, nn_architecture, alpha=0.0001):
-        self.device = "cuda" if torch.cuda.is_available() else "cpu"
+        if torch.cuda.is_available():
+            print("CUDA device detected but this wont be used due to small network size.")
+        self.device = "cpu"
         print(f"Device: {self.device}")
         self.model = NeuralNetwork(nn_architecture).to(self.device)
         self.criterion = nn.MSELoss()
