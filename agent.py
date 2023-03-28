@@ -85,7 +85,7 @@ class DQNAgent:
 
         return loss.item()
 
-    def on_epoch_ended(self):
+    def on_epoch_ended(self, total_reward: int):
         self.train_agent(flush_buffer=True)
         self.action_selection_policy.decay()
         if self.use_target_network:

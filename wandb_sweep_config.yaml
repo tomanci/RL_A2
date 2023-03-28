@@ -24,7 +24,7 @@ parameters:
     values:
       - 1000
       - 10000
-      - 100000
+      - 100000 # maximum buffer size is 500k because of 500*1000 episodes
   policy:
     distribution: categorical
     values:

@@ -1,8 +1,8 @@
 #!/venv/bin/ python3
 
 from dataclasses import asdict
-import numpy as np
 import wandb
+from agent_wandb import WandbDQNAgent
 
 from config import Config, EpsilonConfig, TempConfig
 import main as main
@@ -29,16 +29,8 @@ def wandb_run():
         del(top_level_config["temp"])
         config = Config(epsilon=epslion_config, temp=temp_config, **top_level_config)
        
-        run_rewards = main.run(config, experience_replay=True, target_network=True)
+        _ = main.run(config, experience_replay=True, target_network=True, agent_class=WandbDQNAgent)
 
-        # log all metrics to wandb
-        for step,episode_reward in enumerate(run_rewards):
-            avg_reward_last_100 = np.mean(run_rewards[:step+1][-100:])
-            metrics={"episode_reward": episode_reward, "avg_reward_last_100": avg_reward_last_100}
-            wandb.log(metrics, step=step)
-
-        # TODO: Log Pytorch model to wandb
-        # wandb.watch(model, log="all", log_freq=100, log_graph=True)
     except Exception:
         wandb.finish(exit_code=1)
         raise

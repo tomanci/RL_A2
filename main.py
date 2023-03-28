@@ -39,7 +39,7 @@ def perform_an_episode(agent: DQNAgent, env) -> int:
         if terminated or truncated :
             break
 
-    agent.on_epoch_ended()
+    agent.on_epoch_ended(total_reward)
 
     return total_reward
 
@@ -53,7 +53,7 @@ def read_cli_args():
     return args
 
 
-def run(config: Config, experience_replay: bool, target_network: bool):
+def run(config: Config, experience_replay: bool, target_network: bool, agent_class=DQNAgent):
     environment = gym.make("CartPole-v1")
     print(f"Starting DQN, experience-replay: {experience_replay}, target-network: {target_network}")
 
@@ -67,7 +67,7 @@ def run(config: Config, experience_replay: bool, target_network: bool):
         case policy:
             raise NotImplementedError(f"Policy '{policy}' is not implemented")
 
-    agent = DQNAgent(
+    agent = agent_class(
         config=config,
         action_selection_policy=action_selection_policy,
         use_replay_buffer=experience_replay,
