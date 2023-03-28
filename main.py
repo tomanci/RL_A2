@@ -3,6 +3,7 @@ import numpy as np
 import argparse
 from tqdm import tqdm
 from numpy import asarray, save, load
+from pathlib import Path
 
 from transition import Transition
 from agent import DQNAgent
@@ -74,14 +75,14 @@ def run(config: Config, experience_replay: bool, target_network: bool):
     return rewards
 
 
-def perform_experiment(config_file_path, config, use_experience_replay, use_target_network):
+def perform_experiment(config_file_path: str, config, use_experience_replay, use_target_network):
     rewards = np.ndarray((3, config.epochs), dtype=int)
     for i in range(3):
         experiment_rewards = run(config, use_experience_replay, use_target_network)
         rewards[i] = experiment_rewards
 
     data = asarray(rewards)
-    file_name = 'results/' + config_file_path.split('/')[-1].split('.')[0]
+    file_name = config_file_path.replace("configs/", "results/").replace(".yaml", ".npy")
     save(file_name, data)
 
 

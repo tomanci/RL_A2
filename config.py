@@ -38,6 +38,6 @@ class Config:
     gamma: float = 0.9
 
 
-def load_from_yaml(file_path: str):
+def load_from_yaml(file_path: str) -> Config:
     config = dataconf.file(file_path, Config)
     return config
