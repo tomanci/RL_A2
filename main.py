@@ -4,6 +4,7 @@ import argparse
 from tqdm import tqdm
 from numpy import asarray, save, load
 from pathlib import Path
+from random_policy import RandomPolicy
 
 from transition import Transition
 from agent import DQNAgent
@@ -18,7 +19,7 @@ def train_agent_on_env(agent, env, n_epochs):
         yield reward
 
 
-def perform_an_episode(agent, env) -> int:
+def perform_an_episode(agent: DQNAgent, env) -> int:
     state, _ = env.reset()
     terminated = False
 
@@ -60,6 +61,8 @@ def run(config: Config, experience_replay: bool, target_network: bool):
             action_selection_policy = EpsilonGreedy(config.epsilon)
         case "boltzmann":
             action_selection_policy = Boltzmann(config.temp)
+        case "random":
+            action_selection_policy = RandomPolicy()
         case policy:
             raise NotImplementedError(f"Policy '{policy}' is not implemented")
 
@@ -75,14 +78,15 @@ def run(config: Config, experience_replay: bool, target_network: bool):
     return rewards
 
 
-def perform_experiment(config_file_path: str, config, use_experience_replay, use_target_network):
-    rewards = np.ndarray((3, config.epochs), dtype=int)
-    for i in range(3):
+def perform_experiment(config_file_path: str, config: Config, use_experience_replay: bool, use_target_network: bool, repetitions=5):
+    rewards = np.ndarray((repetitions, config.epochs), dtype=int)
+    for i in range(repetitions):
         experiment_rewards = run(config, use_experience_replay, use_target_network)
         rewards[i] = experiment_rewards
 
     data = asarray(rewards)
     file_name = config_file_path.replace("configs/", "results/").replace(".yaml", ".npy")
+    Path(file_name).parent.mkdir(parents=True, exist_ok=True)
     save(file_name, data)
 
 
