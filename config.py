@@ -1,7 +1,5 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
-import numpy as np
-from numpy import ndarray
 import dataconf
 
 @dataclass
@@ -26,12 +24,12 @@ class TempConfig:
 
 @dataclass
 class Config:
-    architecture: ArchitectureConfig = ArchitectureConfig()
-    nn_architecture: list[int] = list[1, 1, 1, 1]
+    # architecture: ArchitectureConfig = ArchitectureConfig()
+    nn_architecture: list[int] = field(default_factory=lambda: [4,16,16,2])
     learning_rate: float = 0.001
     epochs: int = 1000
-    sampling_rate: int = 2
-    buffer_size: int = 100000
+    sampling_rate: int = 32
+    buffer_size: int = 1000
     policy: str = "epsilon_greedy"
     epsilon: EpsilonConfig = EpsilonConfig()
     temp: TempConfig = TempConfig()

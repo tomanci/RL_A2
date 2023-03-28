@@ -1,4 +1,5 @@
 from typing import List
+import numpy as np
 import torch
 from copy import deepcopy
 from config import Config
@@ -47,7 +48,7 @@ class DQNAgent:
 
     def train_agent(self, flush_buffer=False):
         if self.use_replay_buffer and self.replay_buffer.size() < self.config.sampling_rate:
-            print("[WARNING]: Buffer size is less than the sampling rate")
+            # print("[WARNING]: Current buffer size is less than the sampling rate. Skipping this training step until more transitions are in the buffer.")
             return
 
         if self.use_replay_buffer:
@@ -69,9 +70,9 @@ class DQNAgent:
             batch_states.append(transition.state)
             batch_targets.append(target)
 
-        self.train_with_batch(batch_states, batch_targets)
+        self.train_with_batch(np.array(batch_states), np.array(batch_targets))
 
-    def train_with_batch(self, input_batch, targets):
+    def train_with_batch(self, input_batch: np.ndarray, targets: np.ndarray):
         model_input = torch.tensor(input_batch)
         model_targets = torch.tensor(targets)
 

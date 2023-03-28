@@ -1,0 +1,82 @@
+program: wandb_run.py
+method: random # or bayes
+metric:
+  name: avg_reward_last_100
+  goal: maximize
+parameters:
+  gamma:
+    values:
+      - 0.8
+      - 0.9
+      - 0.95
+      - 1.0
+  epochs:
+    value: 1000
+  learning_rate:
+    values: 
+      - 0.1
+      - 0.01
+      - 0.001
+      - 0.0001
+  sampling_rate:
+    values: [1,2,4,8,32,64,128]
+  buffer_size:
+    values:
+      - 1000
+      - 10000
+      - 100000
+  policy:
+    distribution: categorical
+    values:
+      - epsilon_greedy
+      - boltzmann
+  epsilon:
+    parameters:
+      min:
+        values:
+          - 0.00 # no more exploration after decay
+          - 0.01
+          - 0.05
+          - 0.1
+      decay:
+        values:
+          - 1.0 # no decay at all
+          - 0.99
+          - 0.98
+          - 0.95
+      initial:
+        values: # fibonacci 
+          - 0.8
+          - 0.5
+          - 0.3
+          - 0.2
+          - 0.1
+  temp:
+    parameters:
+      min:
+        values:
+          - 0.00 # no more exploration after decay
+          - 0.01
+          - 0.05
+          - 0.1
+      decay:
+        values:
+          - 1.0 # no decay at all
+          - 0.99
+          - 0.98
+          - 0.95
+      initial:
+        values:
+          - 1.5 # also above 1.0 for more randomness
+          - 1.0 # normal softmax
+          - 0.5
+          - 0.3
+          - 0.1
+  nn_architecture:
+    values:
+      - [4,16,16,2] # 1 hidden layer
+      - [4,16,32,32,16,2] # 2 hidden layer
+      - [4,128,128,128,128,2] # 2 hidden layer
+      - [4,32,32,32,32,32,32,2] # 3 hidden layers
+      - [4,32,32,64,64,32,32,2] # 3 hidden layers
+      - [4,32,32,64,64,64,64,32,32,2] # 4 hidden layers
