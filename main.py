@@ -14,18 +14,19 @@ from boltzmann import Boltzmann
 
 
 def train_agent_on_env(agent, env, n_epochs):
-    for epoch in tqdm(range(n_epochs)):
+    for epoch in (pbar := tqdm(range(n_epochs), desc="Epochs", position=0)):
         reward = perform_an_episode(agent, env)
+        pbar.set_postfix({"last_reward": reward})
         yield reward
 
 
 def perform_an_episode(agent: DQNAgent, env) -> int:
     state, _ = env.reset()
-    terminated = False
 
     total_reward: int = 0
 
-    while not terminated:
+
+    for step in tqdm(list(range(500)), desc="Environment steps", position=1, leave=False): # maximum number of steps. May terminate earlier
         action = agent.select_action_for_state(state)
         next_state, reward, terminated, truncated, _ = env.step(action)
         agent.store_transition(Transition(state, action, reward, next_state, terminated))
@@ -35,7 +36,7 @@ def perform_an_episode(agent: DQNAgent, env) -> int:
 
         state = next_state
 
-        if truncated:
+        if terminated or truncated :
             break
 
     agent.on_epoch_ended()
