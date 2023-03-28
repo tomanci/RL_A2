@@ -1,9 +1,4 @@
-architecture:
-  general_style: "Fully connected NN"
-  hidden_layers: 2
-  hidden_layer_initial_size: 64
-  hidden_layer_scaling: 2.0
-  activation_function: "ReLu"
+
 nn_architecture: # [4, 32], [32, 64], [64, 64], [64, 2]
   - 4
   - 32
