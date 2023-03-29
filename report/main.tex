@@ -95,35 +95,14 @@ Abstracts must be a single paragraph, ideally between 4--6 sentences long.
 Gross violations will trigger corrections at the camera-ready phase.
 \end{abstract}
 
-\section{Electronic Submission}
-\label{submission}
-
-Submission to ICML 2021 will be entirely electronic, via a web site
-(not email). Information about the submission process and \LaTeX\ templates
-are available on the conference web site at:
-\begin{center}
-\textbf{\texttt{http://icml.cc/}}
-\end{center}
-
-The guidelines below will be enforced for initial submissions and
-camera-ready copies. Here is a brief summary:
-\begin{itemize}
-\item Submissions must be in PDF\@.
-\item Submitted papers can be up to eight pages long, not including references, plus unlimited space for references. Accepted papers can be up to nine pages long, not including references, to allow authors to address reviewer comments. Any paper exceeding this length will automatically be rejected. 
-\item \textbf{Do not include author information or acknowledgements} in your
-    initial submission.
-\item Your paper should be in \textbf{10 point Times font}.
-\item Make sure your PDF file only uses Type-1 fonts.
-\item Place figure captions \emph{under} the figure (and omit titles from inside
-    the graphic file itself). Place table captions \emph{over} the table.
-\item References must include page numbers whenever possible and be as complete
-    as possible. Place multiple citations in chronological order.
-\item Do not alter the style template; in particular, do not compress the paper
-    format by reducing the vertical spaces.
-\item Keep your abstract brief and self-contained, one paragraph and roughly
-    4--6 sentences. Gross violations will require correction at the
-    camera-ready phase. The title should have content words capitalized.
-\end{itemize}
+\section{Introduction}
+In this assignment, an agent has to learn how to balance a pole in the vertical position. The environment presented is a well known and defined physic problem, being a reverse pendulum. The vertical position is correspond to the unstable equilibrium point and the pole itself is attached through a join to a 
+cart. The goal of this learning task is to keep upright the pole while moving the cart left or right.
+The possible action space is made up by a set of only two possible movements ${0,1}$, where $0$: the cart is pushed to the left; $1$: the cart is pushed to the right. The state space is composed by four values: position and velocity of the cart, angle and angular velocity of the pendulum.
+The agent receives a reward of $+1$ for every action performed resulted in keeping the pole into a equilibrium state. The environment is reset to the initial condition every time that the value of the angle between the pole and the vertical line is bigger than $15°$ or when the cart leaves the range $(-2,4;2,4)$.\\
+To tackle this problem tabular methods are not sufficient anymore, since keeping in memory all the possible states is not feasible anymore. Therefore, actions cannot be performed anymore on the basis of the Q-value stored in the table, but we need a way to generalize to unseen states. This can be achieved through the application of an Artificial Neural Network. In this assignment our deep neural network taken as input a state returns the Q values for the actions.\\
+As a baseline comparison, we will use a random policy which has a reward around $22$.\\ 
+The structure of the following chapters is as follows. In section 2, 3 and 4, for each of the DQN algorithm hyper-parameters optimization will be analyzed, highlighting the optimal configuration. Section 2 covers the basic case of DQN algorithm while, in section 3 the replay buffer is present and in section 4 the target network is considered. After all this architecture has been presented, section 5 is dedicate the comparison and analysis of the different DQN approaches showing their pros and their limitations.
 
 \subsection{Submitting Papers}
 
