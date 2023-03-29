@@ -24,7 +24,7 @@ class TempConfig:
 
 @dataclass
 class Config:
-    # architecture: ArchitectureConfig = ArchitectureConfig()
+    architecture: ArchitectureConfig = ArchitectureConfig()
     nn_architecture: list[int] = field(default_factory=lambda: [4,16,16,2])
     learning_rate: float = 0.001
     epochs: int = 1000
