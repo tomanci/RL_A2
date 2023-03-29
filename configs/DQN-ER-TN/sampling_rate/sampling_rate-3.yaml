@@ -25,5 +25,5 @@ temp:
   decay: 0.99
   min: 0.05
 gamma: 0.9
-sampling_rate: 512
+sampling_rate: 50
 buffer-size: 1000000
