@@ -21,9 +21,9 @@ epsilon:
   decay: 0.99
   min: 0.01
 temp:
-  initial: 0.1
+  initial: 0.5
   decay: 0.99
-  min: 0.05
+  min: 0.01
 gamma: 0.9
 sampling_rate: 2
 buffer-size: 1000000
