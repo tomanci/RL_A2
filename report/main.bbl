@@ -1,0 +1,16 @@
+\begin{thebibliography}{1}
+\providecommand{\natexlab}[1]{#1}
+\providecommand{\url}[1]{\texttt{#1}}
+\expandafter\ifx\csname urlstyle\endcsname\relax
+  \providecommand{\doi}[1]{doi: #1}\else
+  \providecommand{\doi}{doi: \begingroup \urlstyle{rm}\Url}\fi
+
+\bibitem[Plaat(2022)]{DBLP:books/sp/Plaat22}
+Plaat, A.
+\newblock \emph{Deep Reinforcement Learning}.
+\newblock Springer, 2022.
+\newblock ISBN 978-981-19-0637-4.
+\newblock \doi{10.1007/978-981-19-0638-1}.
+\newblock URL \url{https://doi.org/10.1007/978-981-19-0638-1}.
+
+\end{thebibliography}
