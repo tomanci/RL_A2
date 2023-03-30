@@ -7,7 +7,7 @@ import torch.nn as nn
 
 class DQN:
 
-    def __init__(self, nn_architecture, alpha=0.0001):
+    def __init__(self, nn_architecture, alpha=0.0001, learning_rate_decay=1.0):
         if torch.cuda.is_available():
             print("CUDA device detected but this wont be used due to small network size.")
         self.device = "cpu"
@@ -15,6 +15,7 @@ class DQN:
         self.model = NeuralNetwork(nn_architecture).to(self.device)
         self.criterion = nn.MSELoss()
         self.optimizer = optim.Adam(self.model.parameters(), lr=alpha)
+        self.scheduler = optim.lr_scheduler.ExponentialLR(self.optimizer, gamma=learning_rate_decay)
 
     def forward_pass_no_grad(self, s):
         input_data = torch.tensor(np.copy(s)).to(self.device)

@@ -3,6 +3,7 @@ nn_architecture: # [4, 2]
   - 4
   - 2
 learning_rate: 0.001
+learning_rate_decay: 1.0
 epochs: 1000
 policy: "random"
 epsilon:

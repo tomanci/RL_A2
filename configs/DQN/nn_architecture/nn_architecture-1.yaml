@@ -9,6 +9,7 @@ nn_architecture: # [4, 256], [256, 128], [128, 32], [32, 2]
   - 32
   - 2
 learning_rate: 0.001
+learning_rate_decay: 1.0
 epochs: 1000
 policy: "epsilon_greedy"
 epsilon:

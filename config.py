@@ -27,9 +27,10 @@ class Config:
     architecture: ArchitectureConfig = ArchitectureConfig()
     nn_architecture: list[int] = field(default_factory=lambda: [4,16,16,2])
     learning_rate: float = 0.001
+    learning_rate_decay: float = 0.99 # 1.0 is no decay
     epochs: int = 1000
     sampling_rate: int = 32
-    buffer_size: int = 1000
+    buffer_size: int = 10000
     policy: str = "epsilon_greedy"
     epsilon: EpsilonConfig = EpsilonConfig()
     temp: TempConfig = TempConfig()

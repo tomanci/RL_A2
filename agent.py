@@ -91,6 +91,7 @@ class DQNAgent:
         if self.use_target_network:
             self.target_q_net = deepcopy(self.q_net)
 
+        self.q_net.scheduler.step() # decay learning rate after each epoch
 
     def store_transition(self, transition):
         if self.use_replay_buffer:
