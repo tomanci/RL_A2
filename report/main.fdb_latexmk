@@ -1,14 +1,14 @@
 # Fdb version 3
-["bibtex main"] 1680172565 "main.aux" "main.bbl" "main" 1680173016
+["bibtex main"] 1680179749 "main.aux" "main.bbl" "main" 1680180761
   "./icml2021.bst" 1678789352 27147 754d35bad1e0551f1b55824eb3875247 ""
-  "main.aux" 1680173016 1006 361d9fd031aed85589df814892108541 "pdflatex"
-  "main.bib" 1680172563 697 22db708143f7013f0677a5677015d9e9 ""
+  "main.aux" 1680180760 1700 235eda5f8482798ea24ec86c8b44980d "pdflatex"
+  "main.bib" 1680177321 1610 d79b0107cb8bb637e5113ae2e25e6c92 ""
   (generated)
   "main.bbl"
   "main.blg"
-["pdflatex"] 1680173016 "/home/tom/git/RL_A2/report/main.tex" "main.pdf" "main" 1680173016
+["pdflatex"] 1680180756 "/home/tom/git/RL_A2/report/main.tex" "main.pdf" "main" 1680180761
   "/etc/texmf/web2c/texmf.cnf" 1675613945 475 c0e671620eb5563b2130f56340a5fde8 ""
-  "/home/tom/git/RL_A2/report/main.tex" 1680173015 6824 f2df6d6cbbde5097781728acc7ae1ac0 ""
+  "/home/tom/git/RL_A2/report/main.tex" 1680180756 9153 2e7f8f5510f9b646fc3acad441418fdf ""
   "/usr/share/texlive/texmf-dist/fonts/enc/dvips/base/8r.enc" 1165713224 4850 80dc9bab7f31fb78a000ccfed0e27cab ""
   "/usr/share/texlive/texmf-dist/fonts/map/fontname/texfonts.map" 1577235249 3524 cb3e574dea2d1052e39280babc910dc8 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/courier/pcrr7t.tfm" 1136768653 960 379cc0019370a9e0208a0a3f949f847a ""
@@ -20,6 +20,8 @@
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmr8r.tfm" 1136768653 4408 25b74d011a4c66b7f212c0cc3c90061b ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri7t.tfm" 1136768653 2288 f478fc8fed18759effb59f3dad7f3084 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmri8r.tfm" 1136768653 4640 532ca3305aad10cc01d769f3f91f1029 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmro7t.tfm" 1136768653 2212 ddd058020f70d31af08b213e40125079 ""
+  "/usr/share/texlive/texmf-dist/fonts/tfm/adobe/times/ptmro8r.tfm" 1136768653 4548 f370a182a02c40d95c5554802dc0f174 ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi6.tfm" 1136768653 1512 f21f83efb36853c0b70002322c1ab3ad ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmmi9.tfm" 1136768653 1524 d89e2d087a9828407a196f428428ef4a ""
   "/usr/share/texlive/texmf-dist/fonts/tfm/public/cm/cmr6.tfm" 1136768653 1300 b62933e007d01cfd073f79b963c01526 ""
@@ -38,6 +40,7 @@
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmb7t.vf" 1136768653 1372 788387fea833ef5963f4c5bffe33eb89 ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmr7t.vf" 1136768653 1380 0ea3a3370054be6da6acd929ec569f06 ""
   "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmri7t.vf" 1136768653 1384 a9d8adaf491ce34e5fba99dc7bbe5f39 ""
+  "/usr/share/texlive/texmf-dist/fonts/vf/adobe/times/ptmro7t.vf" 1136768653 1384 5daa35f30ad788d676a07a579b5db7fa ""
   "/usr/share/texlive/texmf-dist/tex/context/base/mkii/supp-pdf.mkii" 1461363279 71627 94eb9990bed73c364d7f53f960cc8c5b ""
   "/usr/share/texlive/texmf-dist/tex/generic/atbegshi/atbegshi.sty" 1575674566 24708 5584a51a7101caf7e6bbf1fc27d8f7b1 ""
   "/usr/share/texlive/texmf-dist/tex/generic/bigintcalc/bigintcalc.sty" 1576625341 40635 c40361e206be584d448876bba8a64a3b ""
@@ -109,12 +112,13 @@
   "/var/lib/texmf/web2c/pdftex/pdflatex.fmt" 1675614662 2798663 1b0c949bf6e08143b951c5f23c98f43b ""
   "algorithm.sty" 1678789352 2223 ada3eaa0c1bd465a639433dfafc2fc4e ""
   "algorithmic.sty" 1678789352 7414 ce084815cf0aab483787dbc4bf2ace9c ""
+  "assets/hyperparamter-scan/W&B Chart 3_30_2023, 2 24 25 PM.png" 1680179221 3431492 e306600f2b68d0e4f956945721049bd6 ""
   "fancyhdr.sty" 1678789352 20521 e5d13d98d57bd53d4fed3aa61bd29c86 ""
   "icml2021.sty" 1680171851 27032 9d062b6147f8e340eda6c4f225598f6e ""
-  "main.aux" 1680173016 1006 361d9fd031aed85589df814892108541 "pdflatex"
-  "main.bbl" 1680172565 785 4ff1816a3699723e8a8cf3a951ca44fe "bibtex main"
-  "main.out" 1680173016 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
-  "main.tex" 1680173015 6824 f2df6d6cbbde5097781728acc7ae1ac0 ""
+  "main.aux" 1680180760 1700 235eda5f8482798ea24ec86c8b44980d "pdflatex"
+  "main.bbl" 1680179749 1446 e5ed121b4c80a9c9a31bae028794c041 "bibtex main"
+  "main.out" 1680180757 0 d41d8cd98f00b204e9800998ecf8427e "pdflatex"
+  "main.tex" 1680180756 9153 2e7f8f5510f9b646fc3acad441418fdf ""
   (generated)
   "main.aux"
   "main.log"
