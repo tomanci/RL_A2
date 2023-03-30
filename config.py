@@ -3,14 +3,6 @@ from dataclasses import dataclass, field
 import dataconf
 
 @dataclass
-class ArchitectureConfig:
-    general_style: str = "Fully connected NN"
-    hidden_layers: int = 2
-    hidden_layer_initial_size: int = 64
-    hidden_layer_scaling: float = 2.0
-    activation_function: str = "ReLu"
-
-@dataclass
 class EpsilonConfig:
     initial: float = 0.2
     decay: float = 0.99
@@ -24,7 +16,6 @@ class TempConfig:
 
 @dataclass
 class Config:
-    architecture: ArchitectureConfig = ArchitectureConfig()
     nn_architecture: list[int] = field(default_factory=lambda: [4,32,32,32,32,2])
     learning_rate: float = 0.001
     learning_rate_decay: float = 0.99 # 1.0 is no decay
