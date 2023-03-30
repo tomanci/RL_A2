@@ -2,3 +2,7 @@
 venv/
 __pycache__/
 wandb/
+report/main.log
+report/main.pdf
+report/main.synctex.gz
+report/main.aux
