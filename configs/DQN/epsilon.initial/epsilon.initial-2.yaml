@@ -21,5 +21,6 @@ temp:
   decay: 0.99
   min: 0.05
 gamma: 0.9
+target_network_sync_freq: 1
 sampling_rate: 2
 buffer-size: 1000000

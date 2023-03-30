@@ -20,6 +20,8 @@ class DQNAgent:
         self.transition_buffer: List[Transition] = []
         self.use_replay_buffer = use_replay_buffer
         self.use_target_network = use_target_network
+        self.target_network_sync_counter = 0
+        self.target_network_sync_freq = self.config.target_network_sync_freq
 
         self.action_selection_policy = action_selection_policy
         
@@ -89,7 +91,11 @@ class DQNAgent:
         self.train_agent(flush_buffer=True)
         self.action_selection_policy.decay()
         if self.use_target_network:
-            self.target_q_net = deepcopy(self.q_net)
+            if self.target_network_sync_counter == self.target_network_sync_freq:
+                self.target_q_net = deepcopy(self.q_net)
+                self.target_network_sync_counter = 0
+            else:
+                self.target_network_sync_counter += 1
 
         self.q_net.scheduler.step() # decay learning rate after each epoch
 

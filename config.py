@@ -25,7 +25,7 @@ class TempConfig:
 @dataclass
 class Config:
     architecture: ArchitectureConfig = ArchitectureConfig()
-    nn_architecture: list[int] = field(default_factory=lambda: [4,16,16,2])
+    nn_architecture: list[int] = field(default_factory=lambda: [4,32,32,32,32,2])
     learning_rate: float = 0.001
     learning_rate_decay: float = 0.99 # 1.0 is no decay
     epochs: int = 1000
@@ -35,6 +35,7 @@ class Config:
     epsilon: EpsilonConfig = EpsilonConfig()
     temp: TempConfig = TempConfig()
     gamma: float = 0.9
+    target_network_sync_freq: int = 2 # interval of copying TargetNet to PolicyNet. Only used if TN is actually active.
 
 
 def load_from_yaml(file_path: str) -> Config:
