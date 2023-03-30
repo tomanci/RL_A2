@@ -81,13 +81,19 @@
 \printAffiliationsAndNotice{\icmlEqualContribution} % otherwise use the standard text.
 
 \begin{abstract}
-This document provides a basic paper template and submission guidelines.
-Abstracts must be a single paragraph, ideally between 4--6 sentences long.
-Gross violations will trigger corrections at the camera-ready phase.
+This assignment report focuses on Deep Q Learning (DQN)
+with an application to the CartPole environment. 
+The basic concept of DQN is introduced along with the experience replay 
+and target network improvements.
+A hyperparameter scan is used to empirically compare the performance of
+the different models and discuss the results.    
+A high degree of instability in the training process was observed, 
+which is, to some extent, mitigated by specific adjustments of the parameters.
 \end{abstract}
 
 \section{Introduction}
-In this assignment, an agent has to learn how to balance a pole in the vertical position. The environment presented is a well known and defined physic problem, being a reverse pendulum. The vertical position is correspond to the unstable equilibrium point and the pole itself is attached through a join to a 
+\label{sec_introduction}
+In this assignment, an agent has to learn how to balance a pole in the vertical position. The environment \cite{1606.01540} presented is a well known and defined physic problem, being a reverse pendulum. The vertical position is correspond to the unstable equilibrium point and the pole itself is attached through a join to a 
 cart. The goal of this learning task is to keep upright the pole while moving the cart left or right.
 The possible action space is made up by a set of only two possible movements ${0,1}$, where $0$: the cart is pushed to the left; $1$: the cart is pushed to the right. The state space is composed by four values: position and velocity of the cart, angle and angular velocity of the pendulum.
 The agent receives a reward of $+1$ for every action performed resulted in keeping the pole into a equilibrium state. The environment is reset to the initial condition every time that the value of the angle between the pole and the vertical line is bigger than $15°$ or when the cart leaves the range $(-2,4;2,4)$.\\
