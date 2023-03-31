@@ -26,7 +26,7 @@ class Config:
     epsilon: EpsilonConfig = EpsilonConfig()
     temp: TempConfig = TempConfig()
     gamma: float = 0.9
-    target_network_sync_freq: int = 2 # interval of copying TargetNet to PolicyNet. Only used if TN is actually active.
+    target_network_sync_freq: int = 2  # interval of copying TargetNet to PolicyNet. Only used if TN is actually active.
 
 
 def load_from_yaml(file_path: str) -> Config:

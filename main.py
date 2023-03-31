@@ -36,7 +36,7 @@ def perform_an_episode(agent: DQNAgent, env) -> int:
 
         state = next_state
 
-        if terminated or truncated :
+        if terminated or truncated:
             break
 
     agent.on_epoch_ended(total_reward)

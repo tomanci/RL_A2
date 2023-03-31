@@ -20,6 +20,9 @@ You can reproduce them by starting several computations in parallel.
 python main.py -er -tn -f configs/DQN-ER-TN/epsilon.initial/epsilon.initial-1.yaml
 python main.py -er -tn -f configs/DQN-ER-TN/epsilon.initial/epsilon.initial-2.yaml
 ...
+
+
+for FILE in configs/DQN-ER-TN/epsilon.initial/*; do python3 main.py -er -tn -f $FILE; done
 ```
 
 The plots are generated using the `plotting.ipynb` notebook. You'll have to adjust the configuration parameters at the top for your specific experiment.

@@ -26,11 +26,7 @@ class DQNAgent:
         self.action_selection_policy = action_selection_policy
         
     def select_action_for_state(self, state):
-        if self.use_target_network:
-            q_sa = self.target_q_net.forward_pass_no_grad(state).numpy()
-        else:
-            q_sa = self.q_net.forward_pass_no_grad(state).numpy()
-
+        q_sa = self.q_net.forward_pass_no_grad(state).numpy()
         return self.action_selection_policy.select_action(q_sa)
 
     def get_state_q_value(self, state):
