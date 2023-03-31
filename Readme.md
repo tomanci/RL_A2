@@ -2,6 +2,7 @@
 
 ### Reinforcement Learning 2023, Master CS, Leiden University Assignment 2 on Deep Q Learning (DQN)
 
+The latest version of the report is generated using a GitHub action: [main.pdf]().
 
 
 # Getting started
