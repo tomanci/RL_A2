@@ -19,6 +19,9 @@
 
 % Use the following line for the initial blind version submitted for review:
 \usepackage[accepted]{icml2021}
+\usepackage{amsmath}
+\usepackage{amssymb}
+\usepackage{stmaryrd}
 
 % If accepted, instead use the following line for the camera-ready submission:
 %\usepackage[accepted]{icml2021}
@@ -53,13 +56,15 @@
 
 \begin{icmlauthorlist}
 \icmlauthor{Tom Stein (s3780120)}{lu}
-\icmlauthor{Tom Stein (s3780120)}{lu}
-\icmlauthor{Tom Stein (s3780120)}{lu}
+\icmlauthor{Andrija Kuzmanov (s3766780)}{lu}
+\icmlauthor{Tommaso Ancilli (s3674657)}{lu}
 \end{icmlauthorlist}
    
 \icmlaffiliation{lu}{Faculty of Science, Leiden University, Leiden, The Netherlands}
 
 \icmlcorrespondingauthor{Tom Stein}{tom.stein@tu-dortmund.de}
+\icmlcorrespondingauthor{Andrija Kuzmanov}{andrija.kuzmanov@gmail.com}
+\icmlcorrespondingauthor{Tommaso Ancilli}{tommaso.ancilli@student.unisi.it}
 
 % You may provide any keywords that you
 % find helpful for describing your paper; these are used to populate
@@ -92,38 +97,166 @@ which is, to some extent, mitigated by specific adjustments of the parameters.
 \end{abstract}
 
 \section{Introduction}
-\label{sec_introduction}
-In this assignment, an agent has to learn how to balance a pole in the vertical position. The environment \cite{1606.01540} presented is a well known and defined physic problem, being a reverse pendulum. The vertical position is correspond to the unstable equilibrium point and the pole itself is attached through a join to a 
-cart. The goal of this learning task is to keep upright the pole while moving the cart left or right.
-The possible action space is made up by a set of only two possible movements ${0,1}$, where $0$: the cart is pushed to the left; $1$: the cart is pushed to the right. The state space is composed by four values: position and velocity of the cart, angle and angular velocity of the pendulum.
-The agent receives a reward of $+1$ for every action performed resulted in keeping the pole into a equilibrium state. The environment is reset to the initial condition every time that the value of the angle between the pole and the vertical line is bigger than $15°$ or when the cart leaves the range $(-2,4;2,4)$.\\
-To tackle this problem tabular methods are not sufficient anymore, since keeping in memory all the possible states is not feasible anymore. Therefore, actions cannot be performed anymore on the basis of the Q-value stored in the table, but we need a way to generalize to unseen states. This can be achieved through the application of an Artificial Neural Network. In this assignment our deep neural network taken as input a state returns the Q values for the actions.\\
-As a baseline comparison, we will use a random policy which has a reward around $22$.\\ 
-The structure of the following chapters is as follows. In section 2, 3 and 4, for each of the DQN algorithm hyper-parameters optimization will be analyzed, highlighting the optimal configuration. Section 2 covers the basic case of DQN algorithm while, in section 3 the replay buffer is present and in section 4 the target network is considered. After all this architecture has been presented, section 5 is dedicate the comparison and analysis of the different DQN approaches showing their pros and their limitations.
-
+\label{sec:introduction}
+In this assignment, an agent has to learn how to balance a pole in the vertical position.
+The environment presented is a well known and well defined physical problem, being a reverse pendulum attached to a carriage through a join.
+The goal of this learning task is to keep the pole in place while moving the cart left or right.
+The possible action space is made up by a set of only two possible movements ${0,1}$, where $0$: the cart is pushed to the left; $1$: the cart is pushed to the right.
+The state space is composed of four values: position and velocity of the cart, angle and angular velocity of the pendulum.
+The agent receives a reward of $+1$ for every action performed that results in keeping the pole in an equilibrium state.
+The environment is reset to the initial condition every time that the value of the angle between the pole and the vertical line is bigger than $15^\circ$ or when the cart leaves the range $(-2,4;2,4)$.
+As it has been coded by OpenAi, the agent has been able to master the game correctly if the total reward is $475$\\.
+The old paradigm, where all the q-values could be stored in a table and updated directly to determine the optimal policy, is not suitable anymore.
+The reason lies in the exponential amount of memory required to store all the possible states ( curse of dimensionality).
+Given the impossibility of memorizing all the possible states, the agent has to learn how to generalize to unseen data.
+This can be done through the application of deep learning.
+It is known that an Artificial Neural Network has the property to approximate any function~\cite{Cybenko}, enabling the possibility of inferring an unseen state and having a more compact representation of the solution itself.
+The resulting algorithm, generated by the union of Deep learning and Q-learning, is called Deep Q-Networks algorithm (DQN).
+In this report, the neural network has to approximate the Q-values using a parameterized function.
+This approach is also called value-based.
+\begin{equation}
+    Q_{\theta} :  s \rightarrow q
+    \label{eq:value-based-approach}
+\end{equation}
+where, $s \in S$ where $S$ represents the set of all the possible states and $q$ is the Q-values of the admissible actions.\\
+In the following chapters, the following points will be addressed.
+In \autoref{sec:methodology}, the underlying theories regarding the separate approaches will be shown.
+The \autoref{sec:results} is dedicated to the discussion of the optimal configuration for the hyper-parameters tuned on the DQN architecture, which exploits the advantages of replay buffer and target network.
+In this portion of the report the parameters are tweaked individually, which places this unit at the opposite end of the \autoref{sec:bonus}.
+Thereupon, this section is dedicated to study the relationship that each hyper-parameter has with the others.
+Finally, \autoref{sec:introduction} is devoted to give a better insight into what could have been improved.\\
+As a baseline comparison to juxtapose to the different solution will be the random one.
+In this one, the agent performs random moves, and the average cumulative reward is set to $22.4$.
 
 \section{Methodology}
-\label{sec_Methodology}
+\label{sec:methodology}
+In this section we are going to look into the methods used to solve the cart pole balancing problem.
+Ideally we would like to solve the problem with a Q-learning method, since it is easy to implement and to interpret.
+However, due to continuous state space it is not possible to store a $Q(s,a)$ value for every state-action pair.
+Because of that we will use deep learning methods to help us estimate the $Q(s,a)$ value for any given state-action pair.
+Firstly, we are going to look into the DQN or Deep Q-learning method.
+Secondly, we are going to try to improve the DQN method with experience replay and target network.
 
 \subsection{DQN}
+\label{subsec:dqn}
+DQN is one of the most known deep reinforcement learning algorithms.
+It is based on tabular Q-learning method, but instead of obtaining the $Q$ value from a table,
+we train (adjust the parameters of) a neural network to predict the values given a certain state.
+A neural network is a machine learning structure that contains a large amount of parameters that can be tuned
+to represent a certain function.
+DQN agent learns by taking steps in the environment and updating the $Q$ value estimates by using the obtained reward.
+The update process is called bootstrapping, it refines the old estimates using new updates~\cite{DBLP:books/sp/Plaat22}.
+In order to update the current $Q(s,a)$ value, we first take a step, we obtain a reward, and we compute the target
+(expected) value of $Q(s,a)$ with the following equation:
+
+\begin{align}
+   \label{eq:calculating-target}
+    GT = r + \gamma \cdot \max_{a^\prime} Q_{\phi}(s^\prime, a^\prime)
+\end{align}
+
+From the equation~\ref{eq:calculating-target} we can see that the target is based on the received reward and the discounted
+value of the next state.
+The letter $\gamma$ represents the discount factor and the letter $\phi$ represents the parameters of the neural network $Q$.
+We can then use the target and our current $Q(s,a)$ estimate to compute the loss using a pre-defined loss function.
+A loss function can be any mathematical function that measures the difference between the predicted output and the
+actual output.
+One of the most common examples when it comes to regression problems is the mean squared error function displayed
+in equation~\ref{eq:mse}.
+The $x$ and $y$ denote the predicted and the actual values while the $n$ denotes the amount of predicted values.
+
+\begin{align}
+   \label{eq:mse}
+   \alpha(x, y) = \frac{1}{n} \cdot \sum_{i = 0}^{n} [(x_i - y_i)^2]
+\end{align}
+
+Using the computed loss we can optimize the parameters $\phi$ in to minimize the loss.
+One of the most common algorithms for optimization is called stochastic gradient decent.
+It computes the gradient of the loss function with respect to the parameters $\phi$.
+The gradients are then used to push each of the parameters in the opposite direction of the gradient and with that minimize
+the loss.
+The amount by which each of the parameters is pushed is determined by the learning rate $\alpha$.
+The smaller the $\alpha$ the smaller the step taken in the opposite direction of the gradient.
+
+The algorithm~\ref{alg:dqn} displays how a DQN algorithm learns.
+Similar to regular Q learning there are two loops.
+In first loop we define how many episodes we want to execute and the second loop executes the episode,
+it takes actions in the environment until it reaches a terminal state.
+While performing an episode we first need to pick an action.
+The $Q$ value estimates are obtained by passing the current state $s$ to the neural network.
+Because of this, the estimates will be completely random in the beginning but will improve as we make moves and learn.
+We can also use different policies for action-selection such as epsilon-greedy or the boltzmann policy
+and tune the parameters to incorporate a balance between exploration and exploitation.
+
+After obtaining an action, we can than execute that action inside the environment and obtain the next state $s^\prime$
+as well as the reward $r$ for performing that action.
+We then compute the $Q(s,a)$ value and the target estimate (using equation~\ref{eq:calculating-target}).
+Our loss is equal to the squared difference between the target $Q$ value and the $Q(s,a)$ value we computed.
+
+Once we reach a terminal state, we can calculate the gradient of the loss function with respect to
+the neural network's parameters function.
+Those gradients are then provided to the backward pass function that optimizes the parameters.
+
+\begin{algorithm}
+   \caption{DQN pseudocode}
+   \begin{algorithmic}
+      \REQUIRE environment, Qnet, $\alpha \in (0,1]$, $\gamma \in [0,1]$, $\epsilon \in [0,1]$, max\_epoch $\in$ \mathbf{N}
+      \STATE $s = s_0$ \COMMENT{Initialize start state}
+      \FOR{i = 0..max\_epoch}
+         \STATE sum\_sq = 0
+         \WHILE{$s$ not TERMINAL}
+            \STATE $a$ = select\_action(Qnet(s))
+            \STATE $s^\prime$, $r$ = env.step($a$)
+            \STATE output = max(Qnet($s$))
+            \STATE target = $r$ + $\gamma \cdot$ max(Qnet($s^\prime$))
+            \STATE sum\_sq += $(target - output)^2$
+            \STATE $s = s^\prime$
+         \ENDWHILE
+         \STATE grad = Qnet.gradient(sum\_sq)
+         \STATE Qnet.backward\_pass(grad, $\alpha$)
+      \ENDFOR
+      \STATE \textbf{Return:} Qnet
+   \end{algorithmic}
+   \label{alg:dqn}
+\end{algorithm}
+
+While the algorithm seems promising it steel faces three important challenges.
+Firstly, the convergence of the algorithm depends on the full coverage of the state space, which in the case of the described
+problem is just not feasible.
+Secondly, there is a strong correlation between subsequent training samples that can lead to poor generalization and overfitting
+Thirdly, we use a bootstrapped target to calculate the loss of each prediction.
+The weights of the network that predicts the target changes after every optimization which can lead to unstable learning~\cite{DBLP:books/sp/Plaat22}.
+
+We can not fully solve the problems posed in the previous paragraph, but we can still try to minimize their impact.
+Firstly, the problem of low coverage can be improved by setting a high probability of taking an exploratory step.
+The higher the probability the higher amount of state space the algorithm will explore.
+Secondly, we can improve the high correlation problem by implementing a replay buffer, more on this in section~\ref{subsec:experience-replay}.
+Finally, the learning can be stabilised by setting a very low learning rate($\alpha$) that will minimize the change between
+subsequent target predictions.
+Furthermore, we can implement a secondary neural network that is updated less frequently and only used for target predictions.
+This approach is called target network and is explained in the section~\ref{subsec:target-network}
 
 \subsection{Experience Replay}
+\label{subsec:experience-replay}
 
 \subsection{Target Network}
-
+\label{subsec:target-network}
 
 
 \section{Results}
-\label{sec_results}
+\label{sec:results}
 
 \subsection{DQN with ER and TN}
+\label{subsec:dqn-with-er-and-tn}
 
 % TODO: Mention catastropic forgetting
 
 \subsection{DQN ablation study}
-% Show what happens if we cut out parts of the model architecture. 
+\label{subsec:dqn-ablation-study}
+
+% Show what happens if we cut out parts of the model architecture.
 
 \section{Discussion}
+\label{sec:discussion}
 % Discuss results in summary here
 
 
@@ -133,18 +266,19 @@ The structure of the following chapters is as follows. In section 2, 3 and 4, fo
 
 
 \section{Hyperparameter Scan - Bonus}
-In the previous sections, only individual hyperparameters were analyzed in isolation. 
+\label{sec:bonus}
+In the previous sections, only individual hyperparameters were analyzed in isolation.
 This approach does not take into account the dependencies between the different hyperparameters 
-such as learning rate and batch size \cite{DBLP:conf/iclr/SmithKYL18}. 
+such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
 For this reason, a comprehensive hyperparameter scan was performed, in which models were trained on random combinations of the hyperparameters. 
 In the definition of the hyperparameter space \footnote{\texttt{wandb\_sweep\_config.yaml}} 
-no continuous value ranges like [0.8, 1.0] were intentionally used but a preselection of discrete values to be able to group and plot the results more easily. 
+no continuous value ranges like $[0.8, 1.0]$ were intentionally used but a preselection of discrete values to be able to group and plot the results more easily.
 The space contains about 300 million combinations. 
 To search this large space in a reasonable time, several parallel experiments have to be performed. 
-For this purpose, the platform Weights and Biases \cite{wandb} was used to log all training runs and to orchestrate the hyperparameter scan across multiple computers. 
-The results are shown in \autoref{sec_hyperparameter_scan_results}, 
+For this purpose, the platform Weights and Biases~\cite{wandb} was used to log all training runs and to orchestrate the hyperparameter scan across multiple computers.
+The results are shown in \autoref{sec:hyperparameter-scan-results},
 % TODO Update link to wandb
-but can also be viewed interactively online\footnote{\url{https://api.wandb.ai/links/rl-leiden/xttn9bdo}}. 
+but can also be viewed interactively online\footnote{\url{https://api.wandb.ai/links/rl-leiden/xttn9bdo}}.
 
 The results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
 since numerous runs only achieve poor results.
@@ -161,7 +295,7 @@ Apart from this, there are also some positive findings, such as .....
 
 \appendix
 \section{Hyperparameter Scan Results}
-\label{sec_hyperparameter_scan_results}
+\label{sec:hyperparameter-scan-results}
 
 % TODO Update image
 \begin{figure*}[h!]

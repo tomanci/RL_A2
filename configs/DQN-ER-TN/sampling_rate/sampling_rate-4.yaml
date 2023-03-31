@@ -1,3 +1,4 @@
+
 nn_architecture: # [4, 64], [64, 32], [32, 32], [32, 2]
   - 4
   - 64
@@ -21,5 +22,5 @@ temp:
   min: 0.05
 gamma: 0.9
 target_network_sync_freq: 1
-sampling_rate: 100
+sampling_rate: 1024
 buffer-size: 1000000
