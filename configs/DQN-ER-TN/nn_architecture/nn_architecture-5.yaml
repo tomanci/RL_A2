@@ -1,3 +1,4 @@
+
 nn_architecture: # [4, 128],[128 , 128], [128, 2]
   - 4
   - 128
@@ -19,5 +20,5 @@ temp:
   min: 0.05
 gamma: 0.99
 target_network_sync_freq: 1
-sampling_rate: 2
+sampling_rate: 128
 buffer-size: 10000
