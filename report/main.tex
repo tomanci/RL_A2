@@ -174,12 +174,15 @@ where $x$ and $y$ denote the predicted and the actual values, while $n$ denotes 
 \end{align}
 
 Using the computed loss, the parameters $\theta$ can be optimized in order to minimize the loss.
-One of the most common algorithms for optimization is called stochastic gradient descent.
+One of the most common algorithms for optimization is called stochastic gradient descent (SDG).
 It computes the gradient of the loss function with respect to the parameters $\theta$.
 The gradients are then used to push each of the parameters in the opposite direction of the gradient and with that minimize
 the loss.
 The amount by which each of the parameters is pushed is determined by the learning rate $\alpha$.
 The smaller the $\alpha$ the smaller the step taken in the opposite direction of the gradient.
+In the experiments conducted in this report, the Adam optimizer is used, which tries to improve upon the SDG optimizer
+by using the first and the second moments of the gradient to adapt the learning rate for each weight
+of the neural network~\cite{kingma2014adam}.
 
 The algorithm~\ref{alg:dqn} displays how a DQN algorithm learns.
 Similar to regular Q learning, there are two loops.
