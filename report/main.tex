@@ -310,6 +310,32 @@ To scrutinize effectively the best hyper-parameter, a baseline has to be establi
    \end{center}
    \vskip -0.1in
    \end{table}
+
+   Five different learning rates have been taken into account to detect the best one \autoref{comp_learning_rate}. 
+   Beginning our consideration with the highest value, it can be clearly seen how this value is not suitable at all, 
+   leading the agent to receive an average reward that does not even reach the threshold. 
+   The learning rate has a value of $0.01$ but, despite being able to learn relatively quickly in the first hundreds of episodes, 
+   the progression is not sustained in the remaining parts. 
+   Indeed, after the cumulative reward peak has reached around the $190^{th}$ episode, the cumulative reward experiences oscillatory behavior, 
+   varying within a range of $75$ and $30$ moves before the environment is set to the initial state.\\
+   Having a look at the last three learning rates in \autoref{comp_learning_rate}, we can notice how close they are in terms of performances. 
+   We have selected as the best learning rate the one with the value of $5$x$10^{-4}$. 
+   The reasons for this choice lie in some considerations that can be drawn by looking at the plot.\\
+   Firstly, if a comparison can be made between the learning rate with a value of $0.001$ and $5$x$10^{-4}$, the highest learning rate is thought to receive higher rewards in the first two hundred episodes. 
+   However, letting the episodes go on, we can clearly see how $0.0005$ outperforms the other value.\\
+   Secondly, our attention can be focused on the comparison between the two smallest learning rates. 
+   In this case, the main reason why we have decided to prefer $5$x$10^{-4}$ over $1$x$10^{-4}$ is the standard error. 
+   Although the smaller learning rate is more stable and less subjected to fluctuation during the training process, in accordance with the theory, 
+   we can notice how its standard deviation is larger than $5$x$10^{-4}$, bringing to realization that its final performances could not be so reliable.
+
+   \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=\columnwidth]{assets/fig_hp/learning_rate.png}
+      \caption{Comparison between five different learning rates. The think line represents the average performance, while the faided line is the standard deviation. 
+      }
+      \label{comp_learning_rate}
+   \end{figure}
+ 
 % Explain methodology
 %     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
 %     Choose of baseline parameters (our educated guesses from some prior runs)
