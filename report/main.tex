@@ -268,7 +268,39 @@ In this case variable $i$ stands for the number of time steps since the target n
 
 \section{Results}
 \label{sec:results}
+To scrutinize effectively the best hyper-parameter, a baseline has to be establish. In this contest, \autoref{baseline_config} explains the initial configuration of the hyper-parameters. Individually each parameter has been tuned, discovering the optimal value.  
+  
 
+\begin{table}[t]
+   \caption{Baseline hyper-parameters config}
+   \label{baseline_config}
+   \vskip 0.15in
+   \begin{center}
+   \begin{small}
+   \begin{sc}
+   \begin{tabular}{lcccr}
+   \toprule
+   Parameter & Value \\
+   \midrule
+   Network Architecture    & $4-64-32-32-2$ \\
+   Learning rate           & $0.001$ \\
+   Learning rate decay     & $1.0$   \\
+   Epochs                  & $1000$ \\
+   Policy                  & epsilon greedy \\
+   Initial epsilon         & $0.2$ \\
+   Decay                   & $0.99$ \\
+   Minimal epsilon value   & $0.01$ \\
+   Gamma                   & $0.9$ \\
+   Sampling rate           & $2$ \\
+   Buffer size             & $1000000$ \\
+
+   \bottomrule
+   \end{tabular}
+   \end{sc}
+   \end{small}
+   \end{center}
+   \vskip -0.1in
+   \end{table}
 % Explain methodology
 %     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
 %     Choose of baseline parameters (our educated guesses from some prior runs)
