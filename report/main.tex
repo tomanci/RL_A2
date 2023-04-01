@@ -173,7 +173,7 @@ where $x$ and $y$ denote the predicted and the actual values, while $n$ denotes 
    \alpha(x, y) = \frac{1}{n} \cdot \sum_{i = 0}^{n} [(x_i - y_i)^2]
 \end{align}
 
-Using the computed loss, the parameters can be optimized $\theta$ in order to minimize the loss.
+Using the computed loss, the parameters $\theta$ can be optimized in order to minimize the loss.
 One of the most common algorithms for optimization is called stochastic gradient descent.
 It computes the gradient of the loss function with respect to the parameters $\theta$.
 The gradients are then used to push each of the parameters in the opposite direction of the gradient and with that minimize
@@ -183,18 +183,18 @@ The smaller the $\alpha$ the smaller the step taken in the opposite direction of
 
 The algorithm~\ref{alg:dqn} displays how a DQN algorithm learns.
 Similar to regular Q learning, there are two loops.
-The first loop defines the amount of the episodes that need to be executed,and the second loop executes
+The first loop defines the amount of the episodes that need to be executed, and the second loop executes
 the episode until termination.
 While performing an episode, first an action must be picked based on the $Q$ value estimates,
 that are obtained by passing the current state $s$ to the neural network.
 Because of this, the estimates will be completely random in the beginning, but will improve as more moves are made and learned.
 Different policies for action-selection can also be used, for example, epsilon-greedy or the Boltzmann policy
-and whose parameters can be tuned to incorporate a balance between exploration and exploitation.
+whose parameters can be tuned to incorporate a balance between exploration and exploitation.
 
 After obtaining an action, it can then be executed inside the environment in order to obtain the next state $s^\prime$
 as well as the reward $r$ for performing that action.
 Afterwards, the $Q(s,a)$ value and the target estimate can be computed (using \autoref{eq:calculating-target}).
-The loss is equal to the mean squared difference between the target $Q$ value and the $Q(s,a)$ value that was computed.
+The loss is equal to the squared difference between the target $Q$ value and the $Q(s,a)$ value that was computed.
 
 Once terminal state is reached, the gradient of the loss function with respect to the neural network's parameters is calculated.
 Those gradients are then provided to the backward pass function that optimizes the parameters.
@@ -250,7 +250,7 @@ This can lead to overfitting, instability in the training process, and consequen
 Moreover, it may also fail to cover a significant amount of state space and get stuck
 in the local optima because of this.
 To break the correlation, a replay buffer, a buffer that stores experiences, can be used.
-Using this, the DQN agent no longer has to learn from subsequent experiences, as it can obtain random samples
+Using this, the DQN agent no longer needs to learn from subsequent experiences, as it can obtain random samples
 from the replay buffer and learn from them instead.
 Breaking the correlation between subsequent samples improves coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
 Without this, DQN can become biased towards the most recent experiences and forget the previous experiences
@@ -269,7 +269,7 @@ To calculate the target value, the \autoref{eq:calculating-target} can still be 
 neural network it needs to bo replaced with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
 which were used $i$ steps ago.
 In this case variable $i$ stands for the number of time steps since the target neural network $\hat Q$ was last updated.
-After every $n$ steps, the $\hat Q_{\theta - i}$ is updated, making the variable $i$ equal to 0 and $\hat Q_{\theta}$
+After every $n$ steps, the $\hat Q_{\theta - i}$ is updated, making the variable $i$ equal to 0 and $\hat Q_{\theta - i}$
 equal to $Q_\theta$.
 
 \section{Results}
