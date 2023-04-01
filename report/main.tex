@@ -282,8 +282,10 @@ In order to have a common baseline for making comparisons, we have collected the
 The values used to fill in \autoref{baseline_config} were an educated guess, stemming from previous runs.\\
 Aware of the fact that the data we are going to present need statistical significance, 
 otherwise it would be impossible to draw valid conclusions, we decided to use 5 as the number of repetitions as in our opinion, 
-it presented a fair compromise between statistical significance and the computational power required to perform the calculations. 
-
+it presented a fair compromise between statistical significance and the computational power required to perform the calculations.\\
+As previously mentioned in \autoref{introduction}, we have taken as a reference an agent that performs causal sequences. 
+The architecture of this agent is rather elementary, containing only the initial and final layers. 
+The average number of random moves performed before the environment is reset was found as the average of the total rewards for each episode.\\ 
 
 \begin{table}[t]
    \caption{Baseline hyper-parameters config}
