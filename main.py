@@ -2,7 +2,6 @@ import gymnasium as gym
 import numpy as np
 import argparse
 from tqdm import tqdm
-from numpy import asarray, save, load
 from pathlib import Path
 from random_policy import RandomPolicy
 
@@ -49,7 +48,13 @@ def read_cli_args():
     parser.add_argument('-er', '--experience-replay', dest='use_experience_replay', action='store_true')
     parser.add_argument('-tn', '--target-network', dest='use_target_network', action='store_true')
     parser.add_argument('-f', '--config-file', dest='config_file', type=str, default="")
+    parser.add_argument('-d', '--config-file-dir', dest='config_file_dir', type=str, default="")
+    parser.add_argument('-r', '--repetitions', dest='repetitions', type=int, default=5)
     args = parser.parse_args()
+
+    if args.config_file and args.config_file_dir:
+        raise Exception("Please provide either a single config file or a directory with config files")
+
     return args
 
 
@@ -85,20 +90,34 @@ def perform_experiment(config_file_path: str, config: Config, use_experience_rep
         experiment_rewards = run(config, use_experience_replay, use_target_network)
         rewards[i] = experiment_rewards
 
-    data = asarray(rewards)
+    data = np.asarray(rewards)
     file_name = config_file_path.replace("configs/", "results/").replace(".yaml", ".npy")
+    print("Saving experiment results", file_name)
     Path(file_name).parent.mkdir(parents=True, exist_ok=True)
-    save(file_name, data)
+    np.save(file_name, data)
 
 
 def main():
     args = read_cli_args()
-    config_file_path = args.config_file
-    config = load_from_yaml(config_file_path) if config_file_path != "" else Config()
+    config_file_dir: str = args.config_file_dir
+    repetitions: int = args.repetitions
+    if config_file_dir:
 
-    # run(config, args.use_experience_replay, args.use_target_network)
-    perform_experiment(config_file_path, config, args.use_experience_replay, args.use_target_network)
+        if not Path(config_file_dir).exists():
+            raise Exception("The provided config file directory does not exist")
+        else:
+            print("Loading configs from directory", config_file_dir)
 
+        for config_file_path in Path(config_file_dir).glob("*.yaml"):
+            config_file_path = str(config_file_path)
+            config = load_from_yaml(config_file_path)
+            perform_experiment(config_file_path, config, args.use_experience_replay, args.use_target_network, repetitions=repetitions)
+    else:
+        config_file_path: str = args.config_file
+        config = load_from_yaml(config_file_path) if config_file_path != "" else Config()
+
+        # run(config, args.use_experience_replay, args.use_target_network)
+        perform_experiment(config_file_path, config, args.use_experience_replay, args.use_target_network, repetitions=repetitions)
 
 if __name__ == "__main__":
     main()

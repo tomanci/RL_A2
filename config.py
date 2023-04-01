@@ -30,5 +30,6 @@ class Config:
 
 
 def load_from_yaml(file_path: str) -> Config:
+    print("Loading config from", file_path)
     config = dataconf.file(file_path, Config)
     return config
