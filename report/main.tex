@@ -154,12 +154,12 @@ In order to update the current $Q(s,a)$ value, we first take a step, we obtain a
 
 \begin{align}
    \label{eq:calculating-target}
-    GT = r + \gamma \cdot \max_{a^\prime} Q_{\phi}(s^\prime, a^\prime)
+    GT = r + \gamma \cdot \max_{a^\prime} Q_{\theta}(s^\prime, a^\prime)
 \end{align}
 
 From \autoref{eq:calculating-target} we can see that the target is based on the received reward and the discounted
 value of the next state.
-The letter $\gamma$ represents the discount factor and the letter $\phi$ represents the parameters of the neural network $Q$.
+The letter $\gamma$ represents the discount factor and the letter $\theta$ represents the parameters of the neural network $Q$.
 We can then use the target and our current $Q(s,a)$ estimate to compute the loss using a pre-defined loss function.
 A loss function can be any mathematical function that measures the difference between the predicted output and the
 actual output.
@@ -171,9 +171,9 @@ where $x$ and $y$ denote the predicted and the actual values, while $n$ denotes 
    \label{eq:mse}
    \alpha(x, y) = \frac{1}{n} \cdot \sum_{i = 0}^{n} [(x_i - y_i)^2]
 \end{align}
-Using the computed loss, we can optimize the parameters $\phi$ in order to minimize the loss.
+Using the computed loss, we can optimize the parameters $\theta$ in order to minimize the loss.
 One of the most common algorithms for optimization is called stochastic gradient descent.
-It computes the gradient of the loss function with respect to the parameters $\phi$.
+It computes the gradient of the loss function with respect to the parameters $\theta$.
 The gradients are then used to push each of the parameters in the opposite direction of the gradient and with that minimize
 the loss.
 The amount by which each of the parameters is pushed is determined by the learning rate $\alpha$.
@@ -252,10 +252,19 @@ Breaking the correlation between subsequent samples helps us to improve coverage
 Without this, DQN can become biased towards the most recent experiences and forget the previous experiences
 that are still very relevant for the task.
 
-
 \subsection{Target Network}
 \label{subsec:target-network}
 
+In order to improve the stability of learning and reduce the divergence cause by frequent weight updates, we can introduce
+a target network~\cite{DBLP:books/sp/Plaat22}.
+Target network $\hat Q$ is a new neural network that the algorithm will use to output the target values.
+The newly added network is structurally a copy of the value network $Q$, that gets updated every $n$ steps
+by copying the parameters of the neural network $Q$ that we use for action selection ($\hat Q = Q$).
+That way the target predictions remain stable for a longer period of time.
+To calculate the target value, we can still use the \autoref{eq:calculating-target}, but instead of using the $Q_\theta$
+neural network we need to replace it with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
+which were used $i$ steps ago.
+In this case variable $i$ stands for the number of time steps since the target neural network $\hat Q$ was last updated.
 
 \section{Results}
 \label{sec:results}
