@@ -385,6 +385,60 @@ The average number of random moves performed before the environment is reset was
 
 % Show what happens if we cut out parts of the model architecture.
 
+
+\section{Hyperparameter Scan - Bonus}
+\label{sec:bonus}
+So far, only some individual hyperparameters were analyzed in isolation in \autoref{sec:results}.
+This approach does not take into account the dependencies between the different hyperparameters 
+such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
+Additionally, some hyperparameters such as learning rate decay, experience buffer size and target network sync frequency have not been investigated at all.
+For this reason, a comprehensive hyperparameter scan was performed, in which DQN models with ER and TN were trained on random combinations of the hyperparameters. 
+The definition of the hyperparameter search space\footnote{\texttt{wandb\_sweep\_config.yaml}} 
+intentionally does not make use of continuous value ranges like $[0.8, 1.0]$ but a preselection of discrete values to be able to group and plot the results more easily.
+The hyperparameter space contains about 300 million combinations and is too large to be fully searched (i.e. grid search). 
+Therefore, a random search in combination with parallel experiments were used to search this large space in a reasonable time.
+To support this, the platform Weights and Biases~\cite{wandb} was used to log\footnote{\texttt{wandb\_run.py}} all experiments and to orchestrate the hyperparameter scan across multiple computers.
+The results are shown in \autoref{sec:hyperparameter-scan-results},
+but can also be viewed interactively online\footnote{\url{https://api.wandb.ai/links/rl-leiden/udme67qe}}. 
+In total 166 parameter combinations were evaluated in 6 days compute time.
+
+
+Unfortunately, only a few runs, with respect to the hyperparameter space size, could be collected (166) due to time limitation
+and many of the insights have to be taken with care since there is not much statistical support for them.
+Furthermore, it must be ensured that the policy-specific parameters such as the initial epsilon value or the initial temp value are only evaluated for runs in which the corresponding action selection policy has been selected. 
+Otherwise the results are arbitrary, because the parameters are not used at all.
+Additionally, it must be taken into account that the model's performance shown in the parallel axis plot 
+\autoref{fig_hyperparameter_scan_parallel_axis} is solely based on the performance in the last 100 epochs (900-1000).
+
+Nevertheless, we carefully analyzed the data and found the following three findings.
+Firstly, the results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
+since numerous runs only achieve poor results, much worse than a random agent. 
+Secondly, the results of the hyperparameter scan, when considered in isolation, 
+support most of the findings from \autoref{sec:results}. 
+For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size}). 
+Similar support can be found for the learning rate and the initial exploration factor values.
+However, it was found that a gamma value of 1.0 works better than all the others, 
+which is a contradictory result to the previously found behavior with a similar gamma value of 0.99 (see \autoref{fig_hyperparameter_scan_isolated_gamma}).
+This could be explained by the interference with other hyperparameters
+Thirdly, no significant dependency between any two parameters could be found.
+Hypotheses such as a correlation between learning rate and batch size could not be identified. 
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Buffer size.png}
+   \caption{The influence of the experience buffer size on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
+   }
+   \label{fig_hyperparameter_scan_isolated_buffer_size}
+\end{figure}
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Gamma.png}
+   \caption{The influence of gamma on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
+   }
+   \label{fig_hyperparameter_scan_isolated_gamma}
+\end{figure}
+
 \section{Discussion}
 \label{sec:discussion}
 % Discuss results in summary here
@@ -394,29 +448,8 @@ The average number of random moves performed before the environment is reset was
 %   Use soft update from PolicyNet to Target net instead of hard copy every x epochs
 %   Use early stopping to limit effect of overfitting and catastrophic forgetting and reduce computation time
 %   Use other Optimizer (SGD) and loss metric (Huber-loss)
+%   Decrease size of hyperparameter scan search space or run significantly more runs
 
-\section{Hyperparameter Scan - Bonus}
-\label{sec:bonus}
-In the \autoref{sec:results}, only individual hyperparameters were analyzed in isolation.
-This approach does not take into account the dependencies between the different hyperparameters 
-such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
-For this reason, a comprehensive hyperparameter scan was performed, in which models were trained on random combinations of the hyperparameters. 
-The definition of the hyperparameter space\footnote{\texttt{wandb\_sweep\_config.yaml}} 
-intentionally does not make use of continuous value ranges like $[0.8, 1.0]$ but a preselection of discrete values to be able to group and plot the results more easily.
-The hyperparameter space contains about 300 million combinations and is too large to be fully searched (i.e. grid search). 
-Therefore, random search in combination with parallel experiments was used to search this large space in a reasonable time.
-To support this, the platform Weights and Biases~\cite{wandb} was used to log all experiments and to orchestrate the hyperparameter scan across multiple computers.
-The results are shown in \autoref{sec:hyperparameter-scan-results},
-% TODO Update link to wandb
-but can also be viewed interactively online\footnote{\url{https://api.wandb.ai/links/rl-leiden/udme67qe}}. 
-In total 166 parameter combinations were evaluated in 6 days compute time.
-
-The results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
-since numerous runs only achieve poor results, much worse than a random agent. 
-Apart from this, there are also three positive findings.
-Firstly, the results of the hyperparameter scan, when considered in isolation, 
-support the findings from \autoref{sec:results}. 
-For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size}). 
 
 % In the unusual situation where you want a paper to appear in the
 % references without citing it in the main text, use \nocite
@@ -430,26 +463,20 @@ For example, a larger experience buffer size again shows a significant improveme
 \section{Hyperparameter Scan Results}
 \label{sec:hyperparameter-scan-results}
 
-% TODO Update image
+% TODO Move into main part if there is enough space
 \begin{figure*}[ht!]
    \centering
-   \includegraphics[width=\textwidth]{assets/hyperparamter-scan/W&B Chart 3_30_2023, 2 24 25 PM.png}
+   \includegraphics[width=\textwidth]{assets/hyperparamter-scan/W&B Chart parallel axis.png}
    \caption{Parallel axis plot of the hyperparameter scan. 
       Each line shows a single parameter configuration that was evaluated. 
       The color indicates the performance measured by the average of the last 100 epochs (see legend on the right). 
       Higher average reward (yellow) is better.
+      Configurations with an average reward of more than 150 are highlighted (see selection on the legend).
+      There is an interactive version of this graph available online at \url{https://api.wandb.ai/links/rl-leiden/udme67qe}.
    }
    \label{fig_hyperparameter_scan_parallel_axis}
 \end{figure*}
 
-
-\begin{figure}[ht!]
-   \centering
-   \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Buffer size.png}
-   \caption{The influence of the experience buffer size on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
-   }
-   \label{fig_hyperparameter_scan_isolated_buffer_size}
-\end{figure}
 
 \section{Team member contributions}
 Andrija implemented the DQN with ER and TN, experiment configs and executed experiments. % TODO
