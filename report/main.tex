@@ -238,6 +238,21 @@ subsequent target predictions.
 \subsection{Experience Replay}
 \label{subsec:experience-replay}
 
+Plain DQN algorithm suffers from high correlation between subsequent states.
+This means that the agent frequently visits same states and makes similar actions,
+and consequently trains the neural network on very similar samples.
+What is more, because of bootstrapping and function approximation the algorithm can forget some useful behaviour learned in the past.
+This can lead to overfitting, instability in the training process, and consequently poor generalization.
+What is more, it may also fail to cover a significant amount of state space, and may get stuck
+in the local optima because of this.
+To break the correlation, we can use a replay buffer, which is a buffer that stores experiences.
+Using this, we no longer have to learn from subsequent experiences, we can get random samples from the replay buffer
+and learn from them.
+Breaking the correlation between subsequent samples helps us to improve coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
+Without this, DQN can become biased towards the most recent experiences and forget the previous experiences
+that are still very relevant for the task.
+
+
 \subsection{Target Network}
 \label{subsec:target-network}
 
