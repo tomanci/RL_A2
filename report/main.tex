@@ -134,33 +134,34 @@ In this one, the agent performs random moves, and the average cumulative reward 
 
 \section{Methodology}
 \label{sec:methodology}
-In this section, we are going to look into the methods used to solve the cart pole balancing problem.
-Ideally, we would like to solve the problem with a Q-learning method, since it is easy to implement and to interpret.
+This section will examine methods used to solve the cart pole balancing problem.
+Ideally, the problem would be solved with the Q-learning method, since it is easy to implement and interpret.
 However, due to continuous state space it is not possible to store a $Q(s,a)$ value for every state-action pair.
-Because of that, we will use deep learning methods to help us estimate the $Q(s,a)$ value for any given state-action pair.
-Firstly, we are going to look into the DQN or Deep Q-learning method.
-Secondly, we are going to improve the DQN method with experience replay and a target network.
+Because of that, the deep learning methods will be used to estimate the $Q(s,a)$ value for any given state-action pair.
+Firstly, the DQN or Deep Q-learning method will be examined.
+Secondly, the DQN method will be improved with experience replay and a target network.
 
 \subsection{DQN}
 \label{subsec:dqn}
 DQN is one of the most known deep reinforcement learning algorithms.
 It is based on the tabular Q-learning method, but instead of obtaining the $Q$ value from a table,
-we train (adjust the parameters of) a neural network to predict the values given a certain state.
+a neural network is trained (the parameters are adjusted) to predict the values given a certain state.
 A neural network is a machine learning structure that contains a large amount of parameters that can be tuned
 to represent a certain function.
 The DQN agent learns by taking steps in the environment and updating the $Q$ value estimates by using the obtained reward.
 The update process is called bootstrapping, as it refines the old estimates using new updates~\cite{DBLP:books/sp/Plaat22}.
-In order to update the current $Q(s,a)$ value, we first take a step, we obtain a reward, and we compute the (expected) target value $GT$ of $Q(s,a)$ with the following equation:
+In order to update the current $Q(s,a)$ value, first a step is taken, reward is obtained, and the (expected)
+target value $GT$ of $Q(s,a)$ is computed with the following equation:
 
 \begin{align}
    \label{eq:calculating-target}
     GT = r + \gamma \cdot \max_{a^\prime} Q_{\theta}(s^\prime, a^\prime)
 \end{align}
 
-From \autoref{eq:calculating-target} we can see that the target is based on the received reward and the discounted
+From \autoref{eq:calculating-target} it can be seen that the target is based on the received reward and the discounted
 value of the next state.
 The letter $\gamma$ represents the discount factor and the letter $\theta$ represents the parameters of the neural network $Q$.
-We can then use the target and our current $Q(s,a)$ estimate to compute the loss using a pre-defined loss function.
+The target and our current $Q(s,a)$ estimate can then be used to compute the loss using a pre-defined loss function.
 A loss function can be any mathematical function that measures the difference between the predicted output and the
 actual output.
 One of the most common examples when it comes to regression problems is the mean squared error function displayed
@@ -171,7 +172,8 @@ where $x$ and $y$ denote the predicted and the actual values, while $n$ denotes 
    \label{eq:mse}
    \alpha(x, y) = \frac{1}{n} \cdot \sum_{i = 0}^{n} [(x_i - y_i)^2]
 \end{align}
-Using the computed loss, we can optimize the parameters $\theta$ in order to minimize the loss.
+
+Using the computed loss, the parameters can be optimized $\theta$ in order to minimize the loss.
 One of the most common algorithms for optimization is called stochastic gradient descent.
 It computes the gradient of the loss function with respect to the parameters $\theta$.
 The gradients are then used to push each of the parameters in the opposite direction of the gradient and with that minimize
@@ -181,18 +183,20 @@ The smaller the $\alpha$ the smaller the step taken in the opposite direction of
 
 The algorithm~\ref{alg:dqn} displays how a DQN algorithm learns.
 Similar to regular Q learning, there are two loops.
-In the first loop we define how many episodes we want to execute, and the second loop executes the episode until termination.
-While performing an episode, we first need to pick an action based on the $Q$ value estimates, which are obtained by passing the current state $s$ to the neural network.
-Because of this, the estimates will be completely random in the beginning, but will improve as we make moves and learn.
-We can also use different policies for action-selection, such as epsilon-greedy or the Boltzmann policy
-and tune their parameters to incorporate a balance between exploration and exploitation.
+The first loop defines the amount of the episodes that need to be executed,and the second loop executes
+the episode until termination.
+While performing an episode, first an action must be picked based on the $Q$ value estimates,
+that are obtained by passing the current state $s$ to the neural network.
+Because of this, the estimates will be completely random in the beginning, but will improve as more moves are made and learned.
+Different policies for action-selection can also be used, for example, epsilon-greedy or the Boltzmann policy
+and whose parameters can be tuned to incorporate a balance between exploration and exploitation.
 
-After obtaining an action, we can then execute that action inside the environment and obtain the next state $s^\prime$
+After obtaining an action, it can then be executed inside the environment in order to obtain the next state $s^\prime$
 as well as the reward $r$ for performing that action.
-We then compute the $Q(s,a)$ value and the target estimate (using \autoref{eq:calculating-target}).
-Our loss is equal to the mean squared difference between the target $Q$ value and the $Q(s,a)$ value we computed.
+Afterwards, the $Q(s,a)$ value and the target estimate can be computed (using \autoref{eq:calculating-target}).
+The loss is equal to the mean squared difference between the target $Q$ value and the $Q(s,a)$ value that was computed.
 
-Once we reach a terminal state, we can calculate the gradient of the loss function with respect to the neural network's parameters.
+Once terminal state is reached, the gradient of the loss function with respect to the neural network's parameters is calculated.
 Those gradients are then provided to the backward pass function that optimizes the parameters.
 
 
@@ -223,14 +227,14 @@ While the algorithm seems promising, it still faces three important challenges.
 Firstly, the convergence of the algorithm depends on the full coverage of the state space, which in the case of the described
 problem is just not feasible.
 Secondly, there is a strong correlation between subsequent training samples that can lead to poor generalization and overfitting.
-Thirdly, we use a bootstrapped target to calculate the loss of each prediction.
+Thirdly, a bootstrapped target is used to calculate the loss of each prediction.
 The weights of the network that predicts the target change after every optimization step, which can lead to unstable learning~\cite{DBLP:books/sp/Plaat22}.
 
-We can not fully solve the problems posed in the previous paragraph, but we can still try to minimize their impact.
+The problems posed in the previous paragraph can not be fully solved, but it is possible to minimize their impact.
 Firstly, the problem of low coverage can be improved by setting a high probability of taking an exploratory step.
 The higher the probability, the higher amount of state space the algorithm will explore.
-Secondly, we can improve the high correlation problem by implementing a replay buffer, which is described in detail in \autoref{subsec:experience-replay}.
-Thirdly, we can implement a secondary neural network that is updated less frequently and only used for target predictions.
+Secondly, the high correlation problem can be improved by implementing a replay buffer, which is described in \autoref{subsec:experience-replay}.
+Thirdly, a secondary neural network that is updated less frequently can be implemented and used only for target predictions.
 This approach is called target network and is explained in \autoref{subsec:target-network}
 Finally, the learning can be stabilized by setting a very low learning rate $\alpha$ that will minimize the change between
 subsequent target predictions.
@@ -241,30 +245,32 @@ subsequent target predictions.
 Plain DQN algorithm suffers from high correlation between subsequent states.
 This means that the agent frequently visits same states and makes similar actions,
 and consequently trains the neural network on very similar samples.
-What is more, because of bootstrapping and function approximation the algorithm can forget some useful behaviour learned in the past.
+What is more, because of bootstrapping and function approximation the algorithm can forget some useful behaviour that it learned in the past.
 This can lead to overfitting, instability in the training process, and consequently poor generalization.
-What is more, it may also fail to cover a significant amount of state space, and may get stuck
+Moreover, it may also fail to cover a significant amount of state space and get stuck
 in the local optima because of this.
-To break the correlation, we can use a replay buffer, which is a buffer that stores experiences.
-Using this, we no longer have to learn from subsequent experiences, we can get random samples from the replay buffer
-and learn from them.
-Breaking the correlation between subsequent samples helps us to improve coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
+To break the correlation, a replay buffer, a buffer that stores experiences, can be used.
+Using this, the DQN agent no longer has to learn from subsequent experiences, as it can obtain random samples
+from the replay buffer and learn from them instead.
+Breaking the correlation between subsequent samples improves coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
 Without this, DQN can become biased towards the most recent experiences and forget the previous experiences
 that are still very relevant for the task.
 
 \subsection{Target Network}
 \label{subsec:target-network}
 
-In order to improve the stability of learning and reduce the divergence cause by frequent weight updates, we can introduce
-a target network~\cite{DBLP:books/sp/Plaat22}.
+In order to improve the stability of learning and reduce the divergence cause by frequent weight updates,
+a target network can be introduced~\cite{DBLP:books/sp/Plaat22}.
 Target network $\hat Q$ is a new neural network that the algorithm will use to output the target values.
-The newly added network is structurally a copy of the value network $Q$, that gets updated every $n$ steps
-by copying the parameters of the neural network $Q$ that we use for action selection ($\hat Q = Q$).
+The newly added network is structurally a copy of the value network $Q$, but it gets updated every $n$ steps
+by copying the parameters of the neural network $Q$ that is used for action selection ($\hat Q = Q$).
 That way the target predictions remain stable for a longer period of time.
-To calculate the target value, we can still use the \autoref{eq:calculating-target}, but instead of using the $Q_\theta$
-neural network we need to replace it with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
+To calculate the target value, the \autoref{eq:calculating-target} can still be used, however, instead of using the $Q_\theta$
+neural network it needs to bo replaced with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
 which were used $i$ steps ago.
 In this case variable $i$ stands for the number of time steps since the target neural network $\hat Q$ was last updated.
+After every $n$ steps, the $\hat Q_{\theta - i}$ is updated, making the variable $i$ equal to 0 and $\hat Q_{\theta}$
+equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
