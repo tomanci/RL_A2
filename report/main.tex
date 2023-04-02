@@ -129,8 +129,7 @@ The \autoref{sec:results} is dedicated to the discussion of the optimal configur
 In this portion of the report the parameters are tweaked individually, which places this unit at the opposite end of the \autoref{sec:bonus}.
 Thereupon, this section is dedicated to study the relationship that each hyperparameter has with the others.
 Finally, in \autoref{sec:discussion} the results are summarized and insights into what could have been improved are given.
-As a baseline comparison to juxtapose to the different solution will be the random one.
-In this one, the agent performs random moves, and the average cumulative reward is set to $22.4$.
+
 
 \section{Methodology}
 \label{sec:methodology}
@@ -244,7 +243,7 @@ subsequent target predictions.
 
 \subsection{Experience Replay}
 \label{subsec:experience-replay}
-
+% TODO mention ER == Experience Replay
 Plain DQN algorithm suffers from high correlation between subsequent states.
 This means that the agent frequently visits same states and makes similar actions,
 and consequently trains the neural network on very similar samples.
@@ -261,7 +260,7 @@ that are still very relevant for the task.
 
 \subsection{Target Network}
 \label{subsec:target-network}
-
+% TODO: mention TN == Target Network
 In order to improve the stability of learning and reduce the divergence cause by frequent weight updates,
 a target network can be introduced~\cite{DBLP:books/sp/Plaat22}.
 Target network $\hat Q$ is a new neural network that the algorithm will use to output the target values.
@@ -277,12 +276,29 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-To scrutinize effectively the best hyper-parameter, a baseline has to be establish. In this contest, \autoref{baseline_config} explains the initial configuration of the hyper-parameters. Individually each parameter has been tuned, discovering the optimal value.  
-  
+This section presents the results obtained by tuning the most important hyperparameters individually. 
+Furthermore, the effect of experience replay and a target network is investigated afterwards.
 
-\begin{table}[t]
-   \caption{Baseline hyper-parameters config}
-   \label{baseline_config}
+\subsection{DQN with ER and TN}
+\label{subsec:dqn-with-er-and-tn}
+
+% Explain methodology
+%     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
+%     Choose of baseline parameters (our educated guesses from some prior runs)
+%        - Epochs = 1000
+%     Why parameters we varied and what ranges
+%        - Buffer size in the range up to 500k (because that is the limit given by 1000 Epochs * 500 steps)
+In order to have a common baseline for comparisons, a baseline set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
+These values will be used throughout this section if not mentioned otherwise explicitly.
+The values were chosen based on prior experiments and experience.
+To account for the inherent randomness in our experiments,
+from neural network weights initialization and batch selection, 
+we decided to run each experiment 5 times as a compromise between 
+statistical significance and the computational power required to perform the experiments.
+
+\begin{table}[ht]
+   \caption{Baseline hyperparameter values. Assume these values for any hyperparameter throughout this section if not mentioned otherwise.}
+   \label{tbl:baseline_config}
    \vskip 0.15in
    \begin{center}
    \begin{small}
@@ -297,54 +313,112 @@ To scrutinize effectively the best hyper-parameter, a baseline has to be establi
    Epochs                  & $1000$ \\
    Policy                  & epsilon greedy \\
    Initial epsilon         & $0.2$ \\
-   Decay                   & $0.99$ \\
-   Minimal epsilon value   & $0.01$ \\
+   Epsilon Decay           & $0.99$ \\
+   Minimal epsilon         & $0.01$ \\
    Gamma                   & $0.9$ \\
-   Sampling rate           & $2$ \\
-   Buffer size             & $1000000$ \\
-
+   Batch size              & $2$ \\
+   Buffer size             & $500000$ \\
    \bottomrule
    \end{tabular}
    \end{sc}
    \end{small}
    \end{center}
    \vskip -0.1in
-   \end{table}
+\end{table}
 
-   Five different learning rates have been taken into account to detect the best one \autoref{comp_learning_rate}. 
-   Beginning our consideration with the highest value, it can be clearly seen how this value is not suitable at all, 
-   leading the agent to receive an average reward that does not even reach the threshold. 
-   The learning rate has a value of $0.01$ but, despite being able to learn relatively quickly in the first hundreds of episodes, 
-   the progression is not sustained in the remaining parts. 
-   Indeed, after the cumulative reward peak has reached around the $190^{th}$ episode, the cumulative reward experiences oscillatory behavior, 
-   varying within a range of $75$ and $30$ moves before the environment is set to the initial state.\\
-   Having a look at the last three learning rates in \autoref{comp_learning_rate}, we can notice how close they are in terms of performances. 
-   We have selected as the best learning rate the one with the value of $5$x$10^{-4}$. 
-   The reasons for this choice lie in some considerations that can be drawn by looking at the plot.\\
-   Firstly, if a comparison can be made between the learning rate with a value of $0.001$ and $5$x$10^{-4}$, the highest learning rate is thought to receive higher rewards in the first two hundred episodes. 
-   However, letting the episodes go on, we can clearly see how $0.0005$ outperforms the other value.\\
-   Secondly, our attention can be focused on the comparison between the two smallest learning rates. 
-   In this case, the main reason why we have decided to prefer $5$x$10^{-4}$ over $1$x$10^{-4}$ is the standard error. 
-   Although the smaller learning rate is more stable and less subjected to fluctuation during the training process, in accordance with the theory, 
-   we can notice how its standard deviation is larger than $5$x$10^{-4}$, bringing to realization that this variability could affect the study in \autoref{sec:discussion}.
+To verify that the agent actually learned something, 
+we investigated in the performance of a random agent, 
+i.e. an agent that performs any action uniformly random. 
+The random agent achieved an average cumulative reward of 22.4 per episode (see \autoref{fig:random_agent}).
+Any performance below this threshold is worse than taking random actions 
+and can be considered bad.
+
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/random_agent_cumulative_reward.png}
+   \caption{The smoothed cumulative reward per episode of a random agent is shown 
+      along with the standard deviation. The global average of 22.4 is indicated by the black line.
+   }
+   \label{fig:random_agent}
+\end{figure}
+
+Five different learning rates have been taken into account to detect the best one \autoref{fig:comp_learning_rate}. 
+Beginning our consideration with the highest value of $0.1$, it can be clearly seen how this value is not suitable at all, 
+leading the agent to receive an average reward that does not even reach the performance of a random agent. 
+A learning rate of $0.01$ leads the agent to learn relatively quickly in the first hundreds of episodes, 
+but the progression is not sustained in the remaining parts. 
+Indeed, after the cumulative reward peaks around the $190^{th}$ episode, the cumulative reward experiences oscillatory behavior, 
+varying within a range of $75$ and $30$.
+A learning rate of $10^{-4}$ leads to a performance that is comparable to that of $5 \cdot 10^{-4}$ and $10^{-3}$ after 1000 epochs. 
+However, the learning process is considerably slower, as one would expect.
+The learning rates of $5 \cdot 10^{-4}$ and $10^{-3}$ show the best performance in terms of peak reward and computation time. 
+As expected, the slightly larger learning rate of $10^{-3}$ 
+receives higher rewards in the first two hundred episodes. 
+However, letting the episodes go on, we can clearly see how $5 \cdot 10^{-4}$ outperforms the other value.
+After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the five learning related that were considered.
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/fig_hp/learning_rate.png}
+   \caption{Comparison between five different learning rates. The thick line represents the average smoothed performance, while the faded area is the standard deviation. 
+   }
+   \label{fig:comp_learning_rate}
+\end{figure}
+ 
+   Concerning the architecture for the neural network, we have decide to restrict our search guess into finding the best MLP (MultiLayer Perceptron) architecture.
+   Five different architecture has been tested as the \autoref{comp_nn_arch} reports. 
+   In each of the different architecture the number of hidden layers and neurons is chanching. 
+   Giving a closer look at the results we can already discard two different architectures. 
+   The architectures with the following structure $4-256-128-32-2$ and $4-32-128-256-2$ have closely related performances, for this reason the Occam's razor was used as a principle to discard them.\\
+   For the same principle the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
+   
+   I do not know what to write honestly, so i give two different versions and we select the best one:\\
+
+   We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its total reward reached at the end of the training. 
+   In particular, although the tuning of the parameters was arduous requiring almost $400$ episodes to reach the random threshold, 
+   after that an constant growth has been recorded, and the data shows at the end of the training, the agent was able to keep the pole in the vertical position for more than 200 moves.\\
+   We have decided to prefer the smaller one $4-64-32-32-2$ over the bigger one $4-128-128-2$ for the same thought that we have adopted in the previous steps. 
+   Indeed, the smaller architecture has nearly a sixth of the parameters of the other, and surprisingly the performances are almost the same. 
+   As a support of our reasoning, we can argue that the architecture with only two hidden layers is really unstable and thus it is reflected also on the standard deviation.\\
+   
+   \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=\columnwidth]{assets/fig_hp/nn_architecture.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      }
+      \label{comp_nn_arch}
+   \end{figure}
+
+   As an action selection, these two graphs show the comparison between $\epsilon$-greedy and Boltzmann. 
+   Starting with looking at the reward trend as the $\epsilon$ \autoref{comp_epsilon} varies, 
+   it can be seen that at the beginning having a high degree of exploration can allow the agent to perform better. 
+   In fact, up to the 200th episode, the best values are when $\epsilon$ is $0.2$ or $0.5$.  
+   The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
+   In fact, up to the nine-hundredth repetition they all turn out to be very. 
+   The one that turns out to be the best is $\epsilon$ = $0.1$.\\
+   A completely different discussion applies to the study of the optimal temperature parameter \autoref{comp_temp}. 
+   In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
+   According to our metric, the best value for the hyper-parameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
+
+   %TODO: HOW TO CREATE TWO FIGURE IN THE SAME IMAGE
+   % We should only put them into the same figure if that figure spans both columns. Otherwise the images will be too small.
+   \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=\columnwidth]{assets/fig_hp/epsilon.initial.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      }
+      \label{comp_epsilon}
+   \end{figure}
 
    \begin{figure}[ht!]
       \centering
-      \includegraphics[width=\columnwidth]{assets/fig_hp/learning_rate.png}
-      \caption{Comparison between five different learning rates. The think line represents the average performance, while the faided line is the standard deviation. 
+      \includegraphics[width=\columnwidth]{assets/fig_hp/temp.initial.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
       }
-      \label{comp_learning_rate}
+      \label{comp_temp}
    \end{figure}
- 
-% Explain methodology
-%     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
-%     Choose of baseline parameters (our educated guesses from some prior runs)
-%        - Epochs = 1000
-%     Why parameters we varied and what ranges
-%        - Buffer size in the range up to 500k (because that is the limit given by 1000 Epochs * 500 steps)
 
-\subsection{DQN with ER and TN}
-\label{subsec:dqn-with-er-and-tn}
 
 % TODO: Mention catastropic forgetting
 
@@ -352,6 +426,61 @@ To scrutinize effectively the best hyper-parameter, a baseline has to be establi
 \label{subsec:dqn-ablation-study}
 
 % Show what happens if we cut out parts of the model architecture.
+
+
+\section{Hyperparameter Scan - Bonus}
+\label{sec:bonus}
+So far, only some individual hyperparameters were analyzed in isolation in \autoref{sec:results}.
+This approach does not take into account the dependencies between the different hyperparameters 
+such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
+Additionally, some hyperparameters such as learning rate decay, experience buffer size and target network sync frequency have not been investigated at all.
+For this reason, a comprehensive hyperparameter scan was performed, in which DQN models with ER and TN were trained on random combinations of the hyperparameters. 
+The definition of the hyperparameter search space\footnote{\texttt{wandb\_sweep\_config.yaml}} 
+intentionally does not make use of continuous value ranges like $[0.8, 1.0]$ but a preselection of discrete values to be able to group and plot the results more easily.
+The hyperparameter space contains about 300 million combinations and is too large to be fully searched (i.e. grid search). 
+Therefore, a random search in combination with parallel experiments were used to search this large space in a reasonable time.
+To support this, the platform Weights and Biases~\cite{wandb} was used to log\footnote{\texttt{wandb\_run.py}} all experiments and to orchestrate the hyperparameter scan across multiple computers.
+The results are shown in \autoref{sec:hyperparameter-scan-results},
+but can also be viewed interactively online\footnote{\url{https://api.wandb.ai/links/rl-leiden/udme67qe}}. 
+In total 166 parameter combinations were evaluated in 6 days compute time.
+
+
+Unfortunately, only a few runs (166), with respect to the hyperparameter space size, could be collected due to time limitation.
+Therefore, all the insights have to be taken with care since there is not much statistical support for them.
+Furthermore, it must be ensured that policy-specific parameters such as the initial epsilon value or the initial temp value are only evaluated for runs in which the corresponding action selection policy has been applied. 
+Otherwise the results are arbitrary, because the parameters are not used at all.
+Additionally, it must be taken into account that the model's performance shown in the parallel axis plot 
+\autoref{fig_hyperparameter_scan_parallel_axis} is solely based on the performance in the last 100 epochs (900-1000) 
+and does not reflect and prior good or bad performance.
+
+Nevertheless, we carefully analyzed the data and found the following three findings.
+Firstly, the results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
+since numerous runs only achieve poor results, much worse than a random agent. 
+Secondly, the results of the hyperparameter scan, when considered in isolation, 
+support most of the findings from \autoref{sec:results}. 
+For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size}). 
+Similar support can be found for the learning rate and the initial exploration factor values.
+However, it was found that a gamma value of 1.0 works better than all the others, 
+which is a contradictory result to the previously found behavior with a similar gamma value of 0.99 (see \autoref{fig_hyperparameter_scan_isolated_gamma}).
+This could be explained by the interference with other hyperparameters
+Thirdly, no significant dependency between any two parameters could be found.
+Hypotheses such as a correlation between learning rate and batch size could not be identified. 
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Buffer size.png}
+   \caption{The influence of the experience buffer size on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
+   }
+   \label{fig_hyperparameter_scan_isolated_buffer_size}
+\end{figure}
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Gamma.png}
+   \caption{The influence of gamma on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
+   }
+   \label{fig_hyperparameter_scan_isolated_gamma}
+\end{figure}
 
 \section{Discussion}
 \label{sec:discussion}
