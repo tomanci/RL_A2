@@ -243,7 +243,6 @@ subsequent target predictions.
 
 \subsection{Experience Replay}
 \label{subsec:experience-replay}
-% TODO mention ER == Experience Replay
 Plain DQN algorithm suffers from high correlation between subsequent states.
 This means that the agent frequently visits same states and makes similar actions,
 and consequently trains the neural network on very similar samples.
@@ -251,7 +250,8 @@ What is more, because of bootstrapping and function approximation the algorithm 
 This can lead to overfitting, instability in the training process, and consequently poor generalization.
 Moreover, it may also fail to cover a significant amount of state space and get stuck
 in the local optima because of this.
-To break the correlation, a replay buffer, a buffer that stores experiences, can be used.
+To break the correlation one can make use of a concept called experience replay (ER).
+The ER adds a replay buffer, a buffer that stores experiences, that can be used to break the correlation.
 Using this, the DQN agent no longer needs to learn from subsequent experiences, as it can obtain random samples
 from the replay buffer and learn from them instead.
 Breaking the correlation between subsequent samples improves coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
@@ -260,10 +260,9 @@ that are still very relevant for the task.
 
 \subsection{Target Network}
 \label{subsec:target-network}
-% TODO: mention TN == Target Network
 In order to improve the stability of learning and reduce the divergence cause by frequent weight updates,
 a target network can be introduced~\cite{DBLP:books/sp/Plaat22}.
-Target network $\hat Q$ is a new neural network that the algorithm will use to output the target values.
+Target network (TN) $\hat Q$ is a new neural network that the algorithm will use to output the target values.
 The newly added network is structurally a copy of the value network $Q$, but it gets updated every $n$ steps
 by copying the parameters of the neural network $Q$ that is used for action selection ($\hat Q = Q$).
 That way the target predictions remain stable for a longer period of time.
