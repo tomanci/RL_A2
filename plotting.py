@@ -96,6 +96,7 @@ hyperparameter_displaynames = {
     "nn_architecture": "NN Architecture",
     "sampling_rate": "Batch size",
     "temp.initial": "Initial Temp",
+    "buffer_size": "Buffer size",
 }
 
 def main():
