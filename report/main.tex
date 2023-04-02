@@ -357,15 +357,42 @@ The average number of random moves performed before the environment is reset was
    after that an constant growth has been recorded, and the data shows at the end of the training, the agent was able to keep the pole in the vertical position for more than 200 moves.\\
    We have decided to prefer the smaller one $4-64-32-32-2$ over the bigger one $4-128-128-2$ for the same thought that we have adopted in the previous steps. 
    Indeed, the smaller architecture has nearly a sixth of the parameters of the other, and surprisingly the performances are almost the same. 
-   As a support of our reasoning, we can argue that the architecture with only two hidden layers is really unstable and thus it is reflected also on the standard deviation.
+   As a support of our reasoning, we can argue that the architecture with only two hidden layers is really unstable and thus it is reflected also on the standard deviation.\\
    
+   \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=.3\textwidth]{assets/fig_hp/nn_architecture.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      }
+      \label{comp_nn_arch}
+   \end{figure}
+
+   As an action selection, these two graphs show the comparison between $\epsilon$-greedy and Boltzmann. 
+   Starting with looking at the reward trend as the $\epsilon$ \autoref{comp_epsilon} varies, 
+   it can be seen that at the beginning having a high degree of exploration can allow the agent to perform better. 
+   In fact, up to the 200th episode, the best values are when $\epsilon$ is $0.2$ or $0.5$.  
+   The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
+   In fact, up to the nine-hundredth repetition they all turn out to be very. 
+   The one that turns out to be the best is $\epsilon$ = $0.1$.\\
+   A completely different discussion applies to the study of the optimal temperature parameter \autoref{comp_temp}. 
+   In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
+   According to our metric, the best value for the hyper-parameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
+
+   %TODO: HOW TO CREATE TWO FIGURE IN THE SAME IMAGE
+   \begin{figure}[ht!]
+      \centering
+      \includegraphics[width=.3\textwidth]{assets/fig_hp/epsilon.initial.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      }
+      \label{comp_epsilon}
+   \end{figure}
 
    \begin{figure}[ht!]
       \centering
-      \includegraphics[width=\columnwidth]{assets/fig_hp/nn_architecture.png}
-      \caption{Comparison between five different learning rates. The think line represents the average performance, while the faided line is the standard deviation. 
+      \includegraphics[width=.3\textwidth]{assets/fig_hp/temp.initial.png}
+      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
       }
-      \label{comp_nn_arch}
+      \label{comp_temp}
    \end{figure}
 
 % Explain methodology
