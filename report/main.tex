@@ -184,7 +184,7 @@ The amount by which each of the parameters is pushed is determined by the learni
 The smaller the $\alpha$ the smaller the step taken in the opposite direction of the gradient.
 In the experiments conducted in this report, the Adam optimizer is used, which tries to improve upon the SDG optimizer
 by using the first and the second moments of the gradient to adapt the learning rate for each weight
-of the neural network~\cite{kingma2014adam}.
+of the neural network~\cite{DBLP:journals/corr/KingmaB14}.
 
 The algorithm~\ref{alg:dqn} displays how a DQN algorithm learns.
 Similar to regular Q learning, there are two loops.
@@ -278,7 +278,7 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-This section presents the results obtained by tuning the most important hyperparameters individually. 
+This section presents the results obtained by tuning the most important hyperparameters individually in \autoref{subsec:dqn-with-er-and-tn}. 
 In \autoref{subsec:dqn-ablation-study}, the effect of experience replay and a target network are investigated.
 In order to have a common baseline for comparisons, a set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
@@ -439,30 +439,60 @@ In this experiment, no significant differences could be found with respect to th
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
-In this section, the ablation study is performed, and the results are displayed in the \autoref{fig:ablation_study}.
-The parameters used for all of the configurations were the ones identified as the best parameters for the DQN\@.
+In this section, an ablation study is performed in which the effect of ER and TN is studied. 
+The parameters used for all the experiments were the ones identified as the best parameters for the DQN and are listed in \autoref{tbl:ablation_study_config}.
+
+\begin{table}[ht]
+   \caption{Optimized hyperparameter values used for the ablation study.}
+   \label{tbl:ablation_study_config}
+   \vskip 0.15in
+   \begin{center}
+   \begin{small}
+   \begin{sc}
+   \begin{tabular}{lcccr}
+   \toprule
+   Parameter & Value \\
+   \midrule
+   Network Architecture    & $4-128-128-2$ \\
+   Learning rate           & $0.0001$ \\
+   Learning rate decay     & $0.999$   \\
+   Epochs                  & $500$ \\
+   Policy                  & epsilon greedy \\
+   Initial epsilon         & $0.2$ \\
+   Epsilon Decay           & $0.98$ \\
+   Minimal epsilon         & $0.01$ \\
+   Gamma                   & $0.9$ \\
+   Batch size              & $16$ \\
+   Buffer size             & $10000$ \\
+   \bottomrule
+   \end{tabular}
+   \end{sc}
+   \end{small}
+   \end{center}
+   \vskip -0.1in
+\end{table}
+
+The results are displayed in \autoref{fig:ablation_study}.
 The plain approach (DQN-ER-TN), where both experience replay and target network have been disabled, performs the worst.
-Plain DQN suffers from the three problems explained in \autoref{subsec:dqn} that cause unstable learning, forgetfulness,
-and low state-space coverage.
-Because of this it performs the worst.
+Plain DQN suffers from the three problems explained in \autoref{subsec:dqn} that cause unstable learning, forgetfulness and low state-space coverage.
+Because of this, it performs the worst.
 The plain DQN is followed closely by DQN-ER in terms of performance.
-DQN-ER is slightly better, however it still suffers from high correlation that leads to overfitting and possibility to
-get stuck in the local optimum.
+DQN-ER is slightly better, however it still suffers from high correlation that leads to overfitting and the possibility to get stuck in local optimum.
 Nevertheless, it still improves the plain DQN by minimizing the divergence problem.
-The model with only the episode replay enabled shows substantial improvements as it solves the issue of high correlation.
-The final DQN model performs the best, it achieves the highest average reward, and the highest reward at the end
+The model with only the episode replay enabled shows substantial improvements, as it solves the issue of high correlation.
+The final DQN model performs the best, as it achieves the highest average reward, and the highest reward at the end
 (albeit with a small margin).
-This also shows that using combining target network and episode replay improvements works well and improves
-the overall performance of the model, which is also confirmed in the book~\cite{DBLP:books/sp/Plaat22}.
+This also shows that combining a target network and episode replay works well and improves
+the overall performance of the model, which is also confirmed in literature~\cite{DBLP:books/sp/Plaat22}.
 One thing that can be noted from this experiment is the slower initial training progress of the models with the episode
 replay enabled.
-This could caused by the fact that it takes longer to randomly sample terminal states (especially with smaller batch sizes)
+This could be caused by the fact that it takes longer to randomly sample terminal states (especially with smaller batch sizes)
 from the replay buffer, which are crucial for learning.
 
 \begin{figure}[ht!]
    \centering
    \includegraphics[width=0.9\columnwidth]{assets/Ablation/ablation_study.png}
-   \caption{Ablation study between four different approaches. 
+   \caption{Ablation study between four different DQN model architectures. DQN indicates a DQN agent with ER and TN enabled, whereas DQN-ER-TN indicates a DQN agent without ER and without TN.
    }
    \label{fig:ablation_study}
 \end{figure}
@@ -490,7 +520,7 @@ Therefore, all the insights have to be taken with care since there is not much s
 Furthermore, it must be ensured that policy-specific parameters such as the initial epsilon value or the initial temp value are only evaluated for runs in which the corresponding action selection policy has been applied. 
 Otherwise the results are arbitrary, because the parameters are not used at all.
 Additionally, it must be taken into account that the model's performance shown in the parallel axis plot 
-\autoref{fig_hyperparameter_scan_parallel_axis} is solely based on the performance in the last 100 epochs (900-1000) 
+\autoref{fig:hyperparameter_scan_parallel_axis} is solely based on the performance in the last 100 epochs (900-1000) 
 and does not reflect and prior good or bad performance.
 
 Nevertheless, we carefully analyzed the data and found the following three findings.
@@ -559,16 +589,16 @@ Furthermore, only MSE (\autoref{eq:mse}) was used as the loss metric, although o
 Finally, the hyperparameter scan can be improved. The search space can be reduced, now that some new insights about the hyperparameters have been discovered. 
 In addition, however, one would still have to evaluate significantly more parameter configuration with more computing resources in order to obtain deeper insights.
 
+\newpage
 \nocite{DBLP:books/sp/Plaat22}
 
 \bibliography{main}
 \bibliographystyle{icml2021}
 
-\newpage
 \appendix
 \section{Team member contributions}
 Tommaso and Andrija implemented the DQN with ER and TN, experiment configs and executed experiments.
-Tom implemented plotting, improved the DQN implementation, executed experiments and did the hyperparameter scan with Weights and Biases.
+Tom implemented plotting, improved the DQN implementation, executed experiments and conducted the hyperparameter scan with Weights and Biases.
 Everybody designed and configured the experiments.
 The report was written with equal contribution from everyone.
 
