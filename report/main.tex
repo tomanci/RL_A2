@@ -501,6 +501,18 @@ Hypotheses such as a correlation between learning rate and batch size could not 
 
 % Improvements
 %   Use soft update from PolicyNet to Target net instead of hard copy every x epochs
+In order to smooth out the updating of the target network, a soft update method can be applied.
+The idea behind it is to gradually update the parameters of the target network instead of updating them all at once.
+The target parameters $\theta_{\text{target}}$ are updated using the \autoref{eq:soft-update} after every update of the policy
+parameters $\theta_{\text{policy}}$.
+Letter $\tau$ denotes the hyperparameter called the soft update coefficient that controls how quickly the parameters of
+the target network are updated~\cite{kobayashi2021t}.
+
+\begin{align}
+   \label{eq:soft-update}
+   \theta_{\text{target}} \leftarrow \tau \theta_{\text{policy}} + (1 - \tau) \theta_{\text{target}}
+\end{align}
+
 %   Use early stopping to limit effect of overfitting and catastrophic forgetting and reduce computation time
 %   Use other Optimizer (SGD) and loss metric (Huber-loss)
 %   Decrease size of hyperparameter scan search space or run significantly more runs
