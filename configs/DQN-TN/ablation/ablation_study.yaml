@@ -20,4 +20,4 @@ temp:
 gamma: 0.9
 target_network_sync_freq: 1
 sampling_rate: 16
-buffer-size: 10000
+buffer_size: 10000

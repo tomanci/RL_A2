@@ -20,4 +20,4 @@ temp:
 gamma: 0.9
 target_network_sync_freq: 1
 sampling_rate: 1 # set to 1 because we don't use ER
-buffer-size: 10000
+buffer_size: 10000
