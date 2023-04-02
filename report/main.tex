@@ -249,8 +249,8 @@ subsequent target predictions.
 The plain DQN algorithm suffers from high correlation between subsequent states, e.g., if the agent performs good and the environment does not change much.
 This means that the agent frequently visits similar states and makes similar actions,
 and consequently trains the neural network on very similar samples.
-What is more, because of bootstrapping and function approximation, the algorithm can forget some useful behaviour that it learned in the past.
-This can lead to overfitting, instability in the training process and consequently poor generalization.
+What is more, because of bootstrapping and function approximation, the algorithm can forget some useful behavior that it learned in the past.
+This can lead to overfitting, instability in the training process, catastrophic forgetting and consequently poor generalization.
 Moreover, it may also fail to cover a significant amount of state space and get stuck
 in the local optima because of this.
 To break the correlation, one can make use of a concept called experience replay (ER).
@@ -278,7 +278,7 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-This section presents the results obtained by tuning the most important hyperparameters individually. 
+This section presents the results obtained by tuning the most important hyperparameters individually in \autoref{subsec:dqn-with-er-and-tn}. 
 In \autoref{subsec:dqn-ablation-study}, the effect of experience replay and a target network are investigated.
 In order to have a common baseline for comparisons, a set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
@@ -306,6 +306,9 @@ To express the confidence in our results, the graphs are portrayed the mean valu
    Initial epsilon         & $0.2$ \\
    Epsilon Decay           & $0.99$ \\
    Minimal epsilon         & $0.01$ \\
+   Initial temp            & $0.1$ \\
+   Temp Decay              & $0.99$ \\
+   Minimal temp            & $0.05$ \\
    Gamma                   & $0.9$ \\
    Batch size              & $2$ \\
    Buffer size             & $500000$ \\
@@ -327,7 +330,7 @@ and can be considered bad.
 
 \begin{figure}[ht!]
    \centering
-   \includegraphics[width=0.3\textwidth]{assets/random_agent_cumulative_reward.png}
+   \includegraphics[width=0.9\columnwidth]{assets/random_agent_cumulative_reward.png}
    \caption{The smoothed cumulative reward per episode of a random agent is shown 
       along with the standard deviation. The global average of 22.4 is indicated by the black dotted line.
    }
@@ -360,57 +363,77 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \begin{figure}[ht!]
    \centering
-   \includegraphics[width=0.3\textwidth]{assets/fig_hp/learning_rate.png}
-   \caption{Comparison between five different learning rates. 
+   \includegraphics[width=0.9\columnwidth]{assets/fig_hp/learning_rate.png}
+   \caption{The smoothed cumulative reward sper episode for five different learning rates are shown 
+   along with the standard deviation. 
    }
    \label{fig:comp_learning_rate}
 \end{figure}
  
-   Concerning the architecture for the neural network, we have decided to restrict our search-guess into finding the best MLP (MultiLayer Perceptron) architecture.
-   Five different architectures have been tested as the \autoref{fig:comp_nn_arch} reports. 
-   In each of the different architecture the number of hidden layers and neurons is chancing. 
-   After taking a closer look at the results, we can already discard the architecture $4-32-128-256-2$ since it performs poorly. 
-   The other mirrored architecture, $4-256-128-32-2$, has the same performance of the smaller ones, and for this reason the Occam's razor was used as a principle to discard them.\\
-   For the same principle the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
-   We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its good trade-off between depth, performance and size. 
-   Indeed, the computational time was almost the same, but having more parameters, we were confident that it would be able to generate a more abstract information about the data.\\
-   \begin{figure}[ht!]
-      \centering
-      \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
-      \caption{Comparison between five different architectures. 
-      }
-      \label{fig:comp_nn_arch}
-   \end{figure}
+Concerning the architecture for the neural network, 
+five different architectures have been evaluated, as shown in \autoref{fig:comp_nn_arch}. 
+In each of the different architecture, the number of hidden layers and neurons per layer is chancing. 
+After taking a closer look at the results, one can already discard the architecture $4-32-128-256-2$ since it performs poorly compared to the others. 
+The other mirrored architecture, $4-256-128-32-2$, has the same performance of the smaller ones, and for this reason the Occam's razor was used as a principle to discard them.
+For the same principle, the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
+It was decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its good trade-off between depth, performance and size. 
+Indeed, the computational time was almost the same, but having more parameters, it can model more complex behaviors.
 
-   As an action selection, these two graphs show the comparison between $\epsilon$-greedy and Boltzmann. 
-   Starting with looking at the reward trend as the $\epsilon$ \autoref{fig:comp_epsilon} varies, 
-   it can be seen that at the beginning having a high degree of exploration can allow the agent to perform better. 
-   In fact, up to the 200th episode, the best values are when $\epsilon$ is $0.2$ or $0.5$.  
-   The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
-   In fact, up to the nine-hundredth repetition they all turn out to be very similar. 
-   The one that turns out to be the best is $\epsilon$ = $0.1$.\\
-   A completely different discussion applies to the study of the optimal temperature parameter \autoref{fig:comp_temp}. 
-   In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
-   According to our metric, the best value for the hyperparameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=0.9\columnwidth]{assets/fig_hp/nn_architecture.png}
+   \caption{The smoothed cumulative rewards per episode for five different neural network architectures are shown 
+   along with the standard deviation. 
+   The numbers indicate input and output numbers of neurons per layer in that sense that $(4,128,128,128,128,2)$ is equivalent to $4-128-128-4$.
+   }
+   \label{fig:comp_nn_arch}
+\end{figure}
 
-   %TODO: HOW TO CREATE TWO FIGURE IN THE SAME IMAGE
-   % We should only put them into the same figure if that figure spans both columns. Otherwise the images will be too small.
-   \begin{figure}[ht!]
-      \centering
-      \includegraphics[width=0.3\textwidth]{assets/fig_hp/epsilon.initial.png}
-      \caption{Comparison between five different architectures.
-      }
-      \label{fig:comp_epsilon}
-   \end{figure}
+Regarding the action selection policy, two standard policies, namely $\varepsilon$-greedy and Boltzmann were analyzed. 
+As noted in \autoref{tbl:baseline_config} a small exponential decay factor was applied to decrease the exploration factor over time which means that technically annealing $\varepsilon$-greedy and annealing Boltzmann were used.
+Starting with looking at the reward trend as the initial $\varepsilon$ value varies in \autoref{fig:comp_epsilon}, 
+it can be seen that at the beginning having a high degree of exploration can allow the agent to learn quicker.
+In fact, up to the 200th episode, the best values are when $\varepsilon$ is $0.2$ or $0.5$.  
+The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
+The one that turns out to be the best is $\varepsilon$ = $0.2$.
+A different discussion applies to the study of the optimal temperature parameter for the Boltzmann policy. 
+As can be seen in \autoref{fig:comp_temp} an initial value of $0.1$ achieves better performance in terms of peak performance and learning speed. 
+However, all values converge to the same in the end. 
 
-   \begin{figure}[ht!]
-      \centering
-      \includegraphics[width=0.3\textwidth]{assets/fig_hp/temp.initial.png}
-      \caption{Comparison between five different architectures.
-      }
-      \label{fig:comp_temp}
-   \end{figure}
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=0.9\columnwidth]{assets/fig_hp/epsilon.initial.png}
+   \caption{The smoothed cumulative rewards per episode for four different initial epsilons values using the $\varepsilon$-Greedy exploration strategy are shown along with the standard deviation. 
+   }
+   \label{fig:comp_epsilon}
+\end{figure}
 
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=0.9\columnwidth]{assets/fig_hp/temp.initial.png}
+   \caption{The smoothed cumulative rewards per episode for four different initial temp values using the Boltzmann exploration strategy are shown along with the standard deviation. 
+   }
+   \label{fig:comp_temp}
+\end{figure}
+
+
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=0.9\columnwidth]{assets/fig_hp/buffer_size.png}
+   \caption{The smoothed cumulative rewards per episode for four different sizes of the experience replay buffer are shown along with the standard deviation. 
+   }
+   \label{fig:comp_buffer_size}
+\end{figure}
+
+Finally, the size of the experience replay buffer was considered. 
+Four different sizes were studied for this purpose. 
+With the largest size of 500000, theoretically all transitions that are possible in 1000 epochs (up to 500 per epoch) can be stored. 
+The agent would have an unforgettable memory. 
+With the smallest size of 1000, on the other hand, only significantly less information from the past can be retrieved, whereby it should be noted here that not every epoch during the training is 500 steps long and accordingly more than two epochs in the past can usually be accessed. 
+The results in \autoref{fig:comp_buffer_size} show that a larger buffer leads to a better peak performance. 
+This behavior was also shown before by~\cite{DBLP:conf/icml/FedusRABLRD20}. 
+It can be explained by the fact that the agent not only has access to the last examples in which it performed well, but also to the bad examples that occurred at the very beginning. Overall, the variation in a larger buffer is larger, and thus the agent can generalize better. 
+In this experiment, no significant differences could be found with respect to the required computational effort, since the transitions tuples are very small. In other environments, however, a larger replay buffer can significantly increase the computation time.
 
 % TODO: Mention catastropic forgetting
 
@@ -432,7 +455,7 @@ In fact, despite a slight stochastic phase in which the total reward per epoch i
 
 \begin{figure}[ht!]
    \centering
-   \includegraphics[width=0.3\textwidth]{assets/Ablation/ablation_study.png}
+   \includegraphics[width=0.9\columnwidth]{assets/Ablation/ablation_study.png}
    \caption{Ablation study between four different approaches. 
    }
    \label{fig:ablation_study}
