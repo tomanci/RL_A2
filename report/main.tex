@@ -278,14 +278,14 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-This section presents the results obtained by tuning the most important hyperparameters individually in \autoref{subsec:dqn-with-er-and-tn}. 
+This section presents the results obtained by tuning the most important hyperparameters individually. 
 In \autoref{subsec:dqn-ablation-study}, the effect of experience replay and a target network are investigated.
 In order to have a common baseline for comparisons, a set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
 The values were chosen based on prior experiments and experience.
 To account for the inherent randomness in our experiments,
 we decided to run each combination of hyperparameters five times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
-To express the confidence in our results, the graphs are portrayed the mean value - bold line- and the standard deviation - the faded range surrounding the mean value.   
+To express the confidence in our results, the graphs are portrayed the mean value - bold line- and the standard deviation - the faded range surrounding the mean value. 
 
 \begin{table}[ht]
    \caption{Baseline hyperparameter values. Assume these values for any hyperparameter throughout this section if not mentioned otherwise.}
@@ -321,7 +321,7 @@ To express the confidence in our results, the graphs are portrayed the mean valu
 \end{table}
 
 To verify that the agent actually learned something, 
-we investigated the performance of a random agent, 
+the performance of a random agent was investigated, 
 i.e. an agent that performs any action uniformly random. 
 The random agent achieved an average cumulative reward of 22.4 per episode (see \autoref{fig:random_agent}).
 Any performance below this threshold is worse than taking random actions 
@@ -358,7 +358,7 @@ However, the learning process is considerably slower, as one would expect.
 The learning rates of $5 \cdot 10^{-4}$ and $10^{-3}$ show the best performance in terms of peak reward and computation time. 
 As expected, the slightly larger learning rate of $10^{-3}$ 
 receives higher rewards in the first two hundred episodes. 
-However, letting the episodes go on, we can clearly see how $5 \cdot 10^{-4}$ outperforms the other value.
+However, letting the episodes go on, it can clearly be seen how $5 \cdot 10^{-4}$ outperforms the other value.
 After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the five learning-related that were considered.
 
 \begin{figure}[ht!]
