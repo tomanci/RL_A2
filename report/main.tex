@@ -277,13 +277,13 @@ equal to $Q_\theta$.
 \section{Results}
 \label{sec:results}
 This section presents the results obtained by tuning the most important hyper-parameters individually. 
-In the \autoref{dqn-ablation-study}, the effect of experience replay and a target network is investigated.
+In the \autoref{dqn-ablation-study}, the effect of experience replay and a target network are investigated.
 In order to have a common baseline for comparisons, a set of hyper-parameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
 The values were chosen based on prior experiments and experience.
 To account for the inherent randomness in our experiments,
-we decided to run each combination of hyper-parameters 5 times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
-To express the confidence in our results, in the graphs are portrayed the mean value - bold line- and the standard deviation - the faded interval surrounding the mean value.   
+we decided to run each combination of hyper-parameters five times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
+To express the confidence in our results, the graphs are portrayed the mean value - bold line- and the standard deviation - the faded interval surrounding the mean value.   
 
 \begin{table}[ht]
    \caption{Baseline hyperparameter values. Assume these values for any hyperparameter throughout this section if not mentioned otherwise.}
@@ -316,7 +316,7 @@ To express the confidence in our results, in the graphs are portrayed the mean v
 \end{table}
 
 To verify that the agent actually learned something, 
-we investigated in the performance of a random agent, 
+we investigated the performance of a random agent, 
 i.e. an agent that performs any action uniformly random. 
 The random agent achieved an average cumulative reward of 22.4 per episode (see \autoref{fig:random_agent}).
 Any performance below this threshold is worse than taking random actions 
@@ -347,14 +347,14 @@ Beginning our consideration with the highest value of $0.1$, it can be clearly s
 leading the agent to receive an average reward that does not even reach the performance of a random agent. 
 A learning rate of $0.01$ leads the agent to learn relatively quickly in the first hundreds of episodes, 
 but the progression is not sustained in the remaining parts. 
-Indeed, after the cumulative reward reaches the peak around the $190^{th}$ episode, in the remaining episodes, the number of moves performed by the agent varies within a range of $75$ and $30$, experiencing an oscillatory behavior. 
-A learning rate of $10^{-4}$ leads to a performance that is comparable to the one of $5 \cdot 10^{-4}$ and $10^{-3}$ after 1000 epochs. 
+Indeed, after the cumulative reward reaches its peak around the $190^{th}$ episode, in the remaining episodes, the number of moves performed by the agent varies within a range of $75$ and $30$, exhibiting an oscillatory behavior. 
+A learning rate of $10^{-4}$ leads to a performance that is comparable to the ones of $5 \cdot 10^{-4}$ and $10^{-3}$ after 1000 epochs. 
 However, the learning process is considerably slower, as one would expect.
 The learning rates of $5 \cdot 10^{-4}$ and $10^{-3}$ show the best performance in terms of peak reward and computation time. 
 As expected, the slightly larger learning rate of $10^{-3}$ 
 receives higher rewards in the first two hundred episodes. 
 However, letting the episodes go on, we can clearly see how $5 \cdot 10^{-4}$ outperforms the other value.
-After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the five learning related that were considered.
+After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the five learning-related that were considered.
 
 \begin{figure}[ht!]
    \centering
@@ -364,14 +364,14 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    \label{fig:comp_learning_rate}
 \end{figure}
  
-   Concerning the architecture for the neural network, we have decide to restrict our search guess into finding the best MLP (MultiLayer Perceptron) architecture.
-   Five different architecture has been tested as the \autoref{comp_nn_arch} reports. 
+   Concerning the architecture for the neural network, we have decided to restrict our search-guess into finding the best MLP (MultiLayer Perceptron) architecture.
+   Five different architectures have been tested as the \autoref{comp_nn_arch} reports. 
    In each of the different architecture the number of hidden layers and neurons is chancing. 
-   Giving a closer look at the results we can already discard the architecture $4-32-128-256-2$ since it performs poorly. 
+   After taking a closer look at the results, we can already discard the architecture $4-32-128-256-2$ since it performs poorly. 
    The other mirrored architecture, $4-256-128-32-2$, has the same performance of the smaller ones, and for this reason the Occam's razor was used as a principle to discard them.\\
    For the same principle the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
    We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its good trade-off between depth, performance and size. 
-   Indeed, the computational time was almost the same, but having more parameters we were confident that it would be able to generate a more abstract information of the data.\\
+   Indeed, the computational time was almost the same, but having more parameters, we were confident that it would be able to generate a more abstract information about the data.\\
    \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
@@ -385,7 +385,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    it can be seen that at the beginning having a high degree of exploration can allow the agent to perform better. 
    In fact, up to the 200th episode, the best values are when $\epsilon$ is $0.2$ or $0.5$.  
    The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
-   In fact, up to the nine-hundredth repetition they all turn out to be very. 
+   In fact, up to the nine-hundredth repetition they all turn out to be very similar. 
    The one that turns out to be the best is $\epsilon$ = $0.1$.\\
    A completely different discussion applies to the study of the optimal temperature parameter \autoref{comp_temp}. 
    In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
@@ -414,7 +414,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
-In this subscetion we ablation study is performed \cite{fig_ablation}. After having found the best configuration for the hyper-parameters, we are comparing the different solutions to improve the DQN algorithm.\\
+In this subscetion we ablation study is performed \autoref{fig_ablation}. After having found the best configuration for the hyper-parameters, we are comparing the different solutions to improve the DQN algorithm.\\
 The plain approach, where both Experience Replay and Target Network have been disabled, records the worst performances, unsurprisingly. 
 Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}.\\
 The third approach in term of goodness of the model is the DQN algorithm which has only the target network activated. 
@@ -438,7 +438,7 @@ In fact, despite a slight stochastic phase in which the total reward per epoch i
 
 \section{Hyperparameter Scan - Bonus}
 \label{sec:bonus}
-So far, only some individual hyperparameters were analyzed in isolation in \autoref{sec:results}.
+So far, only some individual hyperparameters were analyzed in isolation in \autoref{results}.
 This approach does not take into account the dependencies between the different hyperparameters 
 such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
 Additionally, some hyperparameters such as learning rate decay, experience buffer size and target network sync frequency have not been investigated at all.
@@ -465,7 +465,7 @@ Nevertheless, we carefully analyzed the data and found the following three findi
 Firstly, the results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
 since numerous runs only achieve poor results, much worse than a random agent. 
 Secondly, the results of the hyperparameter scan, when considered in isolation, 
-support most of the findings from \autoref{sec:results}. 
+support most of the findings from \autoref{results}. 
 For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size})
 as it was found by \cite{DBLP:conf/icml/FedusRABLRD20} too. 
 Similar support can be found for the learning rate and the initial exploration factor values.
