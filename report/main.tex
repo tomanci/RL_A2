@@ -476,7 +476,8 @@ Firstly, the results again illustrate the instability caused by wrong parameter 
 since numerous runs only achieve poor results, much worse than a random agent. 
 Secondly, the results of the hyperparameter scan, when considered in isolation, 
 support most of the findings from \autoref{sec:results}. 
-For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size}). 
+For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size})
+as it was found by \cite{DBLP:conf/icml/FedusRABLRD20} too. 
 Similar support can be found for the learning rate and the initial exploration factor values.
 However, it was found that a gamma value of 1.0 works better than all the others, 
 which is a contradictory result to the previously found behavior with a similar gamma value of 0.99 (see \autoref{fig_hyperparameter_scan_isolated_gamma}).
