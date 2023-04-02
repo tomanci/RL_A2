@@ -367,14 +367,11 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    Concerning the architecture for the neural network, we have decide to restrict our search guess into finding the best MLP (MultiLayer Perceptron) architecture.
    Five different architecture has been tested as the \autoref{comp_nn_arch} reports. 
    In each of the different architecture the number of hidden layers and neurons is chancing. 
-   Giving a closer look at the results we can already discard two different architectures. 
-   The architectures with the following structure $4-256-128-32-2$ and $4-32-128-256-2$ have closely related performances, for this reason the Occam's razor was used as a principle to discard them.\\
+   Giving a closer look at the results we can already discard the architecture $4-32-128-256-2$ since it performs poorly. 
+   The other mirrored architecture, $4-256-128-32-2$, has the same performance of the smaller ones, and for this reason the Occam's razor was used as a principle to discard them.\\
    For the same principle the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
-
-   We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its total reward reached at the end of the training. 
-   In particular, although the tuning of the parameters was arduous requiring almost $400$ episodes to reach the random threshold, 
-   after that a constant growth has been recorded, and the data shows at the end of the training, the agent was able to keep the pole in the vertical position for more than 200 moves. Another consideration weighs-in the preference of this architecture over $4-64-32-32-2$ is that it has a good trade-off between depth performance and size.\\
-   
+   We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its good trade-off between depth, performance and size. 
+   Indeed, the computational time was almost the same, but having more parameters we were confident that it would be able to generate a more abstract information of the data.\\
    \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
