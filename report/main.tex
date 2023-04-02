@@ -276,7 +276,7 @@ equal to $Q_\theta$.
 \section{Results}
 \label{sec:results}
 This section presents the results obtained by tuning the most important hyperparameters individually. 
-In \autoref{dqn-ablation-study}, the effect of experience replay and a target network are investigated.
+In \autoref{subsec:dqn-ablation-study}, the effect of experience replay and a target network are investigated.
 In order to have a common baseline for comparisons, a set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
 The values were chosen based on prior experiments and experience.
@@ -364,7 +364,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 \end{figure}
  
    Concerning the architecture for the neural network, we have decided to restrict our search-guess into finding the best MLP (MultiLayer Perceptron) architecture.
-   Five different architectures have been tested as the \autoref{comp_nn_arch} reports. 
+   Five different architectures have been tested as the \autoref{fig:comp_nn_arch} reports. 
    In each of the different architecture the number of hidden layers and neurons is chancing. 
    After taking a closer look at the results, we can already discard the architecture $4-32-128-256-2$ since it performs poorly. 
    The other mirrored architecture, $4-256-128-32-2$, has the same performance of the smaller ones, and for this reason the Occam's razor was used as a principle to discard them.\\
@@ -376,17 +376,17 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
       \caption{Comparison between five different architectures. 
       }
-      \label{comp_nn_arch}
+      \label{fig:comp_nn_arch}
    \end{figure}
 
    As an action selection, these two graphs show the comparison between $\epsilon$-greedy and Boltzmann. 
-   Starting with looking at the reward trend as the $\epsilon$ \autoref{comp_epsilon} varies, 
+   Starting with looking at the reward trend as the $\epsilon$ \autoref{fig:comp_epsilon} varies, 
    it can be seen that at the beginning having a high degree of exploration can allow the agent to perform better. 
    In fact, up to the 200th episode, the best values are when $\epsilon$ is $0.2$ or $0.5$.  
    The oscillatory and random pattern is a peculiar characteristic of all four possible combinations. 
    In fact, up to the nine-hundredth repetition they all turn out to be very similar. 
    The one that turns out to be the best is $\epsilon$ = $0.1$.\\
-   A completely different discussion applies to the study of the optimal temperature parameter \autoref{comp_temp}. 
+   A completely different discussion applies to the study of the optimal temperature parameter \autoref{fig:comp_temp}. 
    In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
    According to our metric, the best value for the hyperparameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
 
@@ -397,7 +397,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/epsilon.initial.png}
       \caption{Comparison between five different architectures.
       }
-      \label{comp_epsilon}
+      \label{fig:comp_epsilon}
    \end{figure}
 
    \begin{figure}[ht!]
@@ -405,7 +405,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/temp.initial.png}
       \caption{Comparison between five different architectures.
       }
-      \label{comp_temp}
+      \label{fig:comp_temp}
    \end{figure}
 
 
@@ -413,9 +413,10 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
-In this subscetion we ablation study is performed \autoref{fig_ablation}. After having found the best configuration for the hyperparameters, we are comparing the different solutions to improve the DQN algorithm.\\
+In this subscetion we ablation study is performed \autoref{fig:ablation_study}. 
+After having found the best configuration for the hyperparameters, we are comparing the different solutions to improve the DQN algorithm.\\
 The plain approach, where both Experience Replay and Target Network have been disabled, records the worst performances, unsurprisingly. 
-Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}.\\
+Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{subsec:dqn}.\\
 The third approach in term of goodness of the model is the DQN algorithm which has only the target network activated. 
 This solution aims to reduce the divergence, which is one of the elements of the deadly trio. \\
 A possible explanation as to why the model with only the target network only slightly outperforms the basic model lies in parameter tuning. 
@@ -423,7 +424,7 @@ In our opinion, the values found were taken on the basis of the model with both 
 The model that has the replay buffer active manages to achieve a decent performance. By having a buffer size of $10000$ we are able to effectively reduce the dependency between two successive states \cite{DBLP:books/sp/Plaat22}. 
 It should be noted that compared to the previous models, the latter two have a very slow initial training phase and only after many epochs manage to pass the threshold.\\
 Finally, the final analysis focuses on the last model. The data collected reinforce the theoretical foundations studied during the course. 
-In fact, it is evident how the joint combination of the replay buffer and the target network succeeds in limiting the harmful effects of the deadly triad -  \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}. 
+In fact, it is evident how the joint combination of the replay buffer and the target network succeeds in limiting the harmful effects of the deadly triad -  \cite{DBLP:books/sp/Plaat22} and \autoref{subsec:dqn}. 
 In fact, despite a slight stochastic phase in which the total reward per epoch is lower than in the model with only the replay buffer active, the complete model visibly performs better. \\
 
 \begin{figure}[ht!]
@@ -431,13 +432,13 @@ In fact, despite a slight stochastic phase in which the total reward per epoch i
    \includegraphics[width=0.3\textwidth]{assets/Ablation/ablation_study.png}
    \caption{Ablation study between four different approaches. 
    }
-   \label{fig_ablation}
+   \label{fig:ablation_study}
 \end{figure}
 
 
 \section{Hyperparameter Scan - Bonus}
 \label{sec:bonus}
-So far, only some individual hyperparameters were analyzed in isolation in \autoref{results}.
+So far, only some individual hyperparameters were analyzed in isolation in \autoref{sec:results}.
 This approach does not take into account the dependencies between the different hyperparameters 
 such as learning rate and batch size~\cite{DBLP:conf/iclr/SmithKYL18}.
 Additionally, some hyperparameters such as learning rate decay, experience buffer size and target network sync frequency have not been investigated at all.
@@ -464,12 +465,12 @@ Nevertheless, we carefully analyzed the data and found the following three findi
 Firstly, the results again illustrate the instability caused by wrong parameter selection or catastrophic forgetting, 
 since numerous runs only achieve poor results, much worse than a random agent. 
 Secondly, the results of the hyperparameter scan, when considered in isolation, 
-support most of the findings from \autoref{results}. 
-For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig_hyperparameter_scan_isolated_buffer_size})
+support most of the findings from \autoref{sec:results}. 
+For example, a larger experience buffer size again shows a significant improvement in performance (see \autoref{fig:hyperparameter_scan_isolated_buffer_size})
 as it was found by \cite{DBLP:conf/icml/FedusRABLRD20} too. 
 Similar support can be found for the learning rate and the initial exploration factor values.
 However, it was found that a gamma value of 1.0 works better than all the others, 
-which is a contradictory result to the previously found behavior with a similar gamma value of 0.99 (see \autoref{fig_hyperparameter_scan_isolated_gamma}).
+which is a contradictory result to the previously found behavior with a similar gamma value of 0.99 (see \autoref{fig:hyperparameter_scan_isolated_gamma}).
 This could be explained by the interference with other hyperparameters
 Thirdly, no significant dependency between any two parameters could be found.
 Hypotheses such as a correlation between learning rate and batch size could not be identified. 
@@ -479,7 +480,7 @@ Hypotheses such as a correlation between learning rate and batch size could not 
    \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Buffer size.png}
    \caption{The influence of the experience buffer size on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
    }
-   \label{fig_hyperparameter_scan_isolated_buffer_size}
+   \label{fig:hyperparameter_scan_isolated_buffer_size}
 \end{figure}
 
 \begin{figure}[ht!]
@@ -487,7 +488,7 @@ Hypotheses such as a correlation between learning rate and batch size could not 
    \includegraphics[width=\columnwidth]{assets/hyperparamter-scan/W&B Chart Gamma.png}
    \caption{The influence of gamma on the average reward of the last 100 epochs is shown. The values are based on the runs from the hyperparameter scan.
    }
-   \label{fig_hyperparameter_scan_isolated_gamma}
+   \label{fig:hyperparameter_scan_isolated_gamma}
 \end{figure}
 
 \section{Discussion}
