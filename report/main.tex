@@ -276,25 +276,14 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-This section presents the results obtained by tuning the most important hyperparameters individually. 
-Furthermore, the effect of experience replay and a target network is investigated afterwards.
-
-\subsection{DQN with ER and TN}
-\label{subsec:dqn-with-er-and-tn}
-
-% Explain methodology
-%     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
-%     Choose of baseline parameters (our educated guesses from some prior runs)
-%        - Epochs = 1000
-%     Why parameters we varied and what ranges
-%        - Buffer size in the range up to 500k (because that is the limit given by 1000 Epochs * 500 steps)
-In order to have a common baseline for comparisons, a baseline set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
-These values will be used throughout this section if not mentioned otherwise explicitly.
+This section presents the results obtained by tuning the most important hyper-parameters individually. 
+In the \autoref{dqn-ablation-study}, the effect of experience replay and a target network is investigated.
+In order to have a common baseline for comparisons, a set of hyper-parameters was defined as shown in \autoref{tbl:baseline_config}. 
+These values will be used throughout this section, if not mentioned otherwise explicitly.
 The values were chosen based on prior experiments and experience.
 To account for the inherent randomness in our experiments,
-from neural network weights initialization and batch selection, 
-we decided to run each experiment 5 times as a compromise between 
-statistical significance and the computational power required to perform the experiments.
+we decided to run each combination of hyper-parameters 5 times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
+To express the confidence in our results, in the graphs are portrayed the mean value - bold line- and the standard deviation - the faded interval surrounding the mean value.   
 
 \begin{table}[ht]
    \caption{Baseline hyperparameter values. Assume these values for any hyperparameter throughout this section if not mentioned otherwise.}
@@ -338,19 +327,28 @@ and can be considered bad.
    \centering
    \includegraphics[width=0.3\textwidth]{assets/random_agent_cumulative_reward.png}
    \caption{The smoothed cumulative reward per episode of a random agent is shown 
-      along with the standard deviation. The global average of 22.4 is indicated by the black line.
+      along with the standard deviation. The global average of 22.4 is indicated by the black dotted line.
    }
    \label{fig:random_agent}
 \end{figure}
+
+\subsection{DQN with ER and TN}
+\label{subsec:dqn-with-er-and-tn}
+
+% Explain methodology
+%     Number of repetions was choosen as 5 as a trade-off between statistical significance and computation time
+%     Choose of baseline parameters (our educated guesses from some prior runs)
+%        - Epochs = 1000
+%     Why parameters we varied and what ranges
+%        - Buffer size in the range up to 500k (because that is the limit given by 1000 Epochs * 500 steps)
 
 Five different learning rates have been taken into account to detect the best one \autoref{fig:comp_learning_rate}. 
 Beginning our consideration with the highest value of $0.1$, it can be clearly seen how this value is not suitable at all, 
 leading the agent to receive an average reward that does not even reach the performance of a random agent. 
 A learning rate of $0.01$ leads the agent to learn relatively quickly in the first hundreds of episodes, 
 but the progression is not sustained in the remaining parts. 
-Indeed, after the cumulative reward peaks around the $190^{th}$ episode, the cumulative reward experiences oscillatory behavior, 
-varying within a range of $75$ and $30$.
-A learning rate of $10^{-4}$ leads to a performance that is comparable to that of $5 \cdot 10^{-4}$ and $10^{-3}$ after 1000 epochs. 
+Indeed, after the cumulative reward reaches the peak around the $190^{th}$ episode, in the remaining episodes, the number of moves performed by the agent varies within a range of $75$ and $30$, experiencing an oscillatory behavior. 
+A learning rate of $10^{-4}$ leads to a performance that is comparable to the one of $5 \cdot 10^{-4}$ and $10^{-3}$ after 1000 epochs. 
 However, the learning process is considerably slower, as one would expect.
 The learning rates of $5 \cdot 10^{-4}$ and $10^{-3}$ show the best performance in terms of peak reward and computation time. 
 As expected, the slightly larger learning rate of $10^{-3}$ 
@@ -361,31 +359,26 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 \begin{figure}[ht!]
    \centering
    \includegraphics[width=0.3\textwidth]{assets/fig_hp/learning_rate.png}
-   \caption{Comparison between five different learning rates. The thick line represents the average smoothed performance, while the faded area is the standard deviation. 
+   \caption{Comparison between five different learning rates. 
    }
    \label{fig:comp_learning_rate}
 \end{figure}
  
    Concerning the architecture for the neural network, we have decide to restrict our search guess into finding the best MLP (MultiLayer Perceptron) architecture.
    Five different architecture has been tested as the \autoref{comp_nn_arch} reports. 
-   In each of the different architecture the number of hidden layers and neurons is chanching. 
+   In each of the different architecture the number of hidden layers and neurons is chancing. 
    Giving a closer look at the results we can already discard two different architectures. 
    The architectures with the following structure $4-256-128-32-2$ and $4-32-128-256-2$ have closely related performances, for this reason the Occam's razor was used as a principle to discard them.\\
    For the same principle the architecture with $4-64-32-32-2$ is preferred over $4-32-64-64-2$. 
-   
-   I do not know what to write honestly, so i give two different versions and we select the best one:\\
 
    We have decided to adopt the architecture $4-128-128-2$ over $4-64-32-32-2$ because of its total reward reached at the end of the training. 
    In particular, although the tuning of the parameters was arduous requiring almost $400$ episodes to reach the random threshold, 
-   after that an constant growth has been recorded, and the data shows at the end of the training, the agent was able to keep the pole in the vertical position for more than 200 moves.\\
-   We have decided to prefer the smaller one $4-64-32-32-2$ over the bigger one $4-128-128-2$ for the same thought that we have adopted in the previous steps. 
-   Indeed, the smaller architecture has nearly a sixth of the parameters of the other, and surprisingly the performances are almost the same. 
-   As a support of our reasoning, we can argue that the architecture with only two hidden layers is really unstable and thus it is reflected also on the standard deviation.\\
+   after that a constant growth has been recorded, and the data shows at the end of the training, the agent was able to keep the pole in the vertical position for more than 200 moves. Another consideration weighs-in the preference of this architecture over $4-64-32-32-2$ is that it has a good trade-off between depth performance and size.\\
    
    \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
-      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      \caption{Comparison between five different architectures. 
       }
       \label{comp_nn_arch}
    \end{figure}
@@ -406,7 +399,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/epsilon.initial.png}
-      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      \caption{Comparison between five different architectures.
       }
       \label{comp_epsilon}
    \end{figure}
@@ -414,7 +407,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    \begin{figure}[ht!]
       \centering
       \includegraphics[width=0.3\textwidth]{assets/fig_hp/temp.initial.png}
-      \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+      \caption{Comparison between five different architectures.
       }
       \label{comp_temp}
    \end{figure}
