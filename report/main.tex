@@ -336,7 +336,7 @@ and can be considered bad.
 
 \begin{figure}[ht!]
    \centering
-   \includegraphics[width=\columnwidth]{assets/random_agent_cumulative_reward.png}
+   \includegraphics[width=0.3\textwidth]{assets/random_agent_cumulative_reward.png}
    \caption{The smoothed cumulative reward per episode of a random agent is shown 
       along with the standard deviation. The global average of 22.4 is indicated by the black line.
    }
@@ -360,7 +360,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \begin{figure}[ht!]
    \centering
-   \includegraphics[width=\columnwidth]{assets/fig_hp/learning_rate.png}
+   \includegraphics[width=0.3\textwidth]{assets/fig_hp/learning_rate.png}
    \caption{Comparison between five different learning rates. The thick line represents the average smoothed performance, while the faded area is the standard deviation. 
    }
    \label{fig:comp_learning_rate}
@@ -384,7 +384,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    
    \begin{figure}[ht!]
       \centering
-      \includegraphics[width=\columnwidth]{assets/fig_hp/nn_architecture.png}
+      \includegraphics[width=0.3\textwidth]{assets/fig_hp/nn_architecture.png}
       \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
       }
       \label{comp_nn_arch}
@@ -405,7 +405,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    % We should only put them into the same figure if that figure spans both columns. Otherwise the images will be too small.
    \begin{figure}[ht!]
       \centering
-      \includegraphics[width=\columnwidth]{assets/fig_hp/epsilon.initial.png}
+      \includegraphics[width=0.3\textwidth]{assets/fig_hp/epsilon.initial.png}
       \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
       }
       \label{comp_epsilon}
@@ -413,7 +413,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
    \begin{figure}[ht!]
       \centering
-      \includegraphics[width=\columnwidth]{assets/fig_hp/temp.initial.png}
+      \includegraphics[width=0.3\textwidth]{assets/fig_hp/temp.initial.png}
       \caption{Comparison between five different architectures. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
       }
       \label{comp_temp}
@@ -424,8 +424,26 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
+In this subscetion we ablation study is performed \cite{fig_ablation}. After having found the best configuration for the hyper-parameters, we are comparing the different solutions to improve the DQN algorithm.\\
+The plain approach, where both Experience Replay and Target Network have been disabled, records the worst performances, unsurprisingly. 
+Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}.\\
+The third approach in term of goodness of the model is the DQN algorithm which has only the target network activated. 
+This solution aims to reduce the divergence, which is one of the elements of the deadly trio. \\
+A possible explanation as to why the model with only the target network only slightly outperforms the basic model lies in parameter tuning. 
+In our opinion, the values found were taken on the basis of the model with both the target network and the replay buffer active and were not optimal in this configuration. \\
+The model that has the replay buffer active manages to achieve a decent performance. By having a buffer size of $10000$ we are able to effectively reduce the dependency between two successive states \cite{DBLP:books/sp/Plaat22}. 
+It should be noted that compared to the previous models, the latter two have a very slow initial training phase and only after many epochs manage to pass the threshold.\\
+Finally, the final analysis focuses on the last model. The data collected reinforce the theoretical foundations studied during the course. 
+In fact, it is evident how the joint combination of the replay buffer and the target network succeeds in limiting the harmful effects of the deadly triad -  \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}. 
+In fact, despite a slight stochastic phase in which the total reward per epoch is lower than in the model with only the replay buffer active, the complete model visibly performs better. \\
 
-% Show what happens if we cut out parts of the model architecture.
+\begin{figure}[ht!]
+   \centering
+   \includegraphics[width=0.3\textwidth]{assets/Ablation/ablation_study.png}
+   \caption{Ablation study between four different approaches. The think line represents the average moves done per episode, while the faded line is the standard deviation. 
+   }
+   \label{fig_ablation}
+\end{figure}
 
 
 \section{Hyperparameter Scan - Bonus}
