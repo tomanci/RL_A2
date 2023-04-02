@@ -13,7 +13,23 @@
 
 
 # Reproducing experiments
-Use the `-r` flag from `main.py` to specify the number of repetitions like `python main.py -er -tn -f example-config.yaml -r 3`, which defaults to 5.
+To generate the data for the experiments you can run the `main.py` file.
+To configure the exact experiment you can use the following flags:
+- `-f` specifies the path of the config file you want to use for the experiment (for example `-f configs/DQN/gamma/gamma-1.yaml`)
+- `-er` **Enables** the experience replay feature
+- `-tn` **Enables** the target network feature
+
+In order to run the experiment using the configuration found in the `configs/DQN/gamma/gamma-1.yaml`, experience
+replay and target network, you would use this command `python main.py -er -tn -f configs/DQN/gamma/gamma-1.yaml`
+
+To generate the plots for the experiment you would use `python plotting.py`.
+
+If a single command is needed than the following command would be sufficient for this example
+
+```
+python main.py -er -tn -f configs/DQN/gamma/gamma-1.yaml && \
+python plotting.py
+```
 
 ## Everything
 
@@ -21,11 +37,11 @@ You can use this bash command to rerun all experiments and generate new plots fr
 Be warned that it takes several hours to run it this way. 
 It is recommended to run specific experiments (in parallel) as described below.
 ```sh
-for DIR in configs/DQN/*; do python3 main.py -er -tn -d $DIR; done && \
-for DIR in configs/DQN-TN/*; do python3 main.py -er -d $DIR; done && \
-for DIR in configs/DQN-ER/*; do python3 main.py -tn -d $DIR; done && \
-for DIR in configs/DQN-ER-TN/*; do python3 main.py -d $DIR; done && \
-python3 plotting.py
+for DIR in configs/DQN/*; do python main.py -er -tn -d $DIR; done && \
+for DIR in configs/DQN-TN/*; do python main.py -er -d $DIR; done && \
+for DIR in configs/DQN-ER/*; do python main.py -tn -d $DIR; done && \
+for DIR in configs/DQN-ER-TN/*; do python main.py -d $DIR; done && \
+python plotting.py
 ```
 
 ## Specific experiments
@@ -43,7 +59,7 @@ or
 python main.py -er -tn -d configs/DQN/epsilon.initial
 
 or
-for FILE in configs/DQN/epsilon.initial/*; do python3 main.py -er -tn -f $FILE; done
+for FILE in configs/DQN/epsilon.initial/*; do python main.py -er -tn -f $FILE; done
 ```
 
 This will generate result files with the reward per epoch like `results/DQN/epsilon.initial/epsilon.initial-1.npy`.
