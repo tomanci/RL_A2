@@ -526,15 +526,21 @@ Hypotheses such as a correlation between learning rate and batch size could not 
 \section{Discussion}
 \label{sec:discussion}
 % Discuss results in summary here
+After presenting the results from the investigation on the different hyperparameters of a DQN Agent in the CartPole environment, this section summarizes the findings, highlights their limitations and gives some directions for improvement.
 
+It was found that a DQN agent based on a relatively small neural network with the right hyperparameters can successfully master the task of balancing in the CartPole environment. 
+However, it should be emphasized that despite improvements such as ER and TN, the learning process is very unstable and only yields good reproducible results with very carefully selected hyperparameters. 
+Without the use of ER, no good reproducible results could be achieved at all. 
+The greatest influence on the learning behavior was found for the hyperparameters learning rate, buffer size and $\gamma$. 
 
 % Improvements
+The greatest influence on the learning behavior was found for the hyperparameters learning rate, buffer size and $\gamma$. 
 %   Use soft update from PolicyNet to Target net instead of hard copy every x epochs
-In order to smooth out the updating of the target network, a soft update method can be applied.
+For example, a hard copy strategy was used so far to update the target network. 
+As an improvement, a soft update method can be applied, in order to smooth out the updating of the target network.
 The idea behind it is to gradually update the parameters of the target network instead of updating them all at once.
-The target parameters $\theta_{\text{target}}$ are updated using the \autoref{eq:soft-update} after every update of the policy
-parameters $\theta_{\text{policy}}$.
-Letter $\tau$ denotes the hyperparameter called the soft update coefficient that controls how quickly the parameters of
+The target parameters $\theta_{\text{target}}$ are updated using \autoref{eq:soft-update} after periodically from the policy parameters $\theta_{\text{policy}}$.
+The letter $\tau$ denotes the hyperparameter, called the soft update coefficient, that controls how quickly the parameters of
 the target network are updated~\cite{kobayashi2021t}.
 
 \begin{align}
@@ -543,19 +549,34 @@ the target network are updated~\cite{kobayashi2021t}.
 \end{align}
 
 %   Use early stopping to limit effect of overfitting and catastrophic forgetting and reduce computation time
+Furthermore, it was observed that the agent generally learns quickly and reaches the maximum possible reward of 500 consistently, but after some time randomly drops in performance. 
+This effect of catastrophic forgetting can be mitigated by implementing an early stopping policy into the training process that strops the training if a plateau is reached.
 %   Use other Optimizer (SGD) and loss metric (Huber-loss)
+Moreover, some hyperparameters were not investigated at all. 
+In addition to the Adam optimizer used, there are many other optimizers that may lead to better stability in the learning process, such as SGD. 
+Furthermore, only MSE (\autoref{eq:mse}) was used as the loss metric, although others such as Huber loss can also be analyzed here.
 %   Decrease size of hyperparameter scan search space or run significantly more runs
-
+Finally, the hyperparameter scan can be improved. The search space can be reduced, now that some new insights about the hyperparameters have been discovered. 
+In addition, however, one would still have to evaluate significantly more parameter configuration with more computing resources in order to obtain deeper insights.
 
 \nocite{DBLP:books/sp/Plaat22}
 
 \bibliography{main}
 \bibliographystyle{icml2021}
 
-
+\newpage
 \appendix
+\section{Team member contributions}
+Tommaso and Andrija implemented the DQN with ER and TN, experiment configs and executed experiments.
+Tom implemented plotting, improved the DQN implementation, executed experiments and did the hyperparameter scan with Weights and Biases.
+Everybody designed and configured the experiments.
+The report was written with equal contribution from everyone.
+
+
 \section{Hyperparameter Scan Results}
 \label{sec:hyperparameter-scan-results}
+
+The parallel axis plot of the hyperparameter scan can be seen in figure \autoref{fig:hyperparameter_scan_parallel_axis}.
 
 % TODO Move into main part if there is enough space
 \begin{figure*}[ht!]
@@ -568,15 +589,9 @@ the target network are updated~\cite{kobayashi2021t}.
       Configurations with an average reward of more than 150 are highlighted (see selection on the legend).
       There is an interactive version of this graph available online at \url{https://api.wandb.ai/links/rl-leiden/udme67qe}.
    }
-   \label{fig_hyperparameter_scan_parallel_axis}
+   \label{fig:hyperparameter_scan_parallel_axis}
 \end{figure*}
 
-
-\section{Team member contributions}
-Tommaso and Andrija implemented the DQN with ER and TN, experiment configs and executed experiments.
-Tom implemented plotting, improved the DQN implementation, executed experiments and did the hyperparameter scan with Weights and Biases.
-Everybody designed and configured the experiments.
-The report was written with equal contribution from everyone.
 
 
 \end{document}
