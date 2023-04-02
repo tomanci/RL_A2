@@ -20,7 +20,7 @@ class Config:
     learning_rate: float = 0.001
     learning_rate_decay: float = 0.99 # 1.0 is no decay
     epochs: int = 1000
-    sampling_rate: int = 32
+    sampling_rate: int = 32 # Batch size in the case of DQN with ER. Otherwise the number of samples to collect before applying optimization.
     buffer_size: int = 10000
     policy: str = "epsilon_greedy"
     epsilon: EpsilonConfig = EpsilonConfig()
