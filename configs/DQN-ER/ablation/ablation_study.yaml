@@ -1,19 +1,17 @@
-nn_architecture: # [4, 64], [64, 32], [32, 32], [32, 2]
+nn_architecture: # [4, 32], [32, 64], [64, 64], [64, 2]
   - 4
-  - 64
-  - 64
-  - 32
-  - 32
-  - 32
-  - 32
+  - 128
+  - 128
+  - 128
+  - 128
   - 2
-learning_rate: 0.001
-learning_rate_decay: 1.0
-epochs: 1000
+learning_rate: 0.0016 # increased learning rate because we reduced batch size
+learning_rate_decay: 0.999
+epochs: 500
 policy: "epsilon_greedy"
 epsilon:
   initial: 0.2
-  decay: 0.99
+  decay: 0.98
   min: 0.01
 temp:
   initial: 0.1
@@ -21,5 +19,5 @@ temp:
   min: 0.05
 gamma: 0.9
 target_network_sync_freq: 1
-sampling_rate: 2
-buffer-size: 1000000
+sampling_rate: 1 # set to 1 because we don't use ER
+buffer-size: 10000
