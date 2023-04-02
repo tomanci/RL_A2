@@ -17,8 +17,15 @@ Use the `-r` flag from `main.py` to specify the number of repetitions like `pyth
 
 ## Everything
 
+You can use this bash command to rerun all experiments and generate new plots from them afterwards. 
+Be warned that it takes several hours to run it this way. 
+It is recommended to run specific experiments (in parallel) as described below.
 ```sh
-for DIR in configs/DQN/*; do python3 main.py -er -tn -d $DIR; done
+for DIR in configs/DQN/*; do python3 main.py -er -tn -d $DIR; done && \
+for DIR in configs/DQN-TN/*; do python3 main.py -er -d $DIR; done && \
+for DIR in configs/DQN-ER/*; do python3 main.py -tn -d $DIR; done && \
+for DIR in configs/DQN-ER-TN/*; do python3 main.py -d $DIR; done && \
+python3 plotting.py
 ```
 
 ## Specific experiments
