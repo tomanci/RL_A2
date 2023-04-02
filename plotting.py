@@ -1,3 +1,4 @@
+import itertools
 from functools import lru_cache
 from typing import Dict, Sequence, Tuple
 import numpy as np
@@ -9,13 +10,19 @@ from scipy.signal import savgol_filter
 from config import load_from_yaml
 
 
-def load_configs_and_data(method: str, hyperparameter: str):
+def load_configs_and_data(method: str, hyperparameter: str, load_value_from_config=True, overwrite_value=None):
     hyperparameter_value_data = {}
 
     for config_path in Path(f"configs/{method}/{hyperparameter}").glob("*.yaml"):
         print(config_path)
         c = load_from_yaml(str(config_path))
-        value = attrgetter(hyperparameter)(c)
+
+        if overwrite_value:
+            value = overwrite_value
+        elif load_value_from_config:
+            value = attrgetter(hyperparameter)(c)
+        else:
+            value = config_path.stem
         
         if isinstance(value, list):
             value = tuple(value)
@@ -74,10 +81,10 @@ def compute_random_agent_reward(savefig=False):
     return random_agent_reward
 
 
-def generate_hyperparameter_plot(method: str, hyperparameter: str, display_name: str):
+def generate_hyperparameter_plot(method: str, hyperparameter: str, display_name: str, load_value_from_config=True):
 
     random_agent_reward = compute_random_agent_reward()
-    data, hyperparameter_values = load_configs_and_data(method, hyperparameter)
+    data, hyperparameter_values = load_configs_and_data(method, hyperparameter, load_value_from_config)
     avg_data, std_data = preprocess_data(data)
     plot(method=method, hyperparameter=hyperparameter, display_name=display_name, hyperparameter_values=hyperparameter_values, avg_data=avg_data, std_data=std_data, random_agent_reward=random_agent_reward)
 
@@ -92,6 +99,8 @@ hyperparameter_displaynames = {
 }
 
 def main():
+    random_agent_reward = compute_random_agent_reward(savefig=True)
+
     # DQN: DQN with ER and TN
     # DQN-ER: DQN without ER but with TN
     # DQN-TR: DQN with ER but without TN
@@ -107,6 +116,15 @@ def main():
         generate_hyperparameter_plot(method=method,
                                      hyperparameter=hyperparameter, 
                                      display_name=hyperparameter_displaynames[hyperparameter])
+
+    # Ablation study
+    ablation_study_data = [load_configs_and_data(method, "ablation", overwrite_value=method) for method in ("DQN", "DQN-ER", "DQN-TN", "DQN-ER-TN")]
+    assert ablation_study_data[0][0].shape[0] == 1
+    data = np.concatenate([d for d, hv in ablation_study_data], axis=0)
+    avg_data, std_data = preprocess_data(data)
+    hyperparameter_values = list(itertools.chain(*[hv for d, hv in ablation_study_data]))
+    plot(method="Ablation", hyperparameter="ablation_study", display_name="Model", hyperparameter_values=hyperparameter_values, avg_data=avg_data, std_data=std_data, random_agent_reward=random_agent_reward)
+
 
 
 if __name__ == "__main__":
