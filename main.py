@@ -1,3 +1,4 @@
+from collections import deque
 import gymnasium as gym
 import numpy as np
 import argparse
@@ -13,9 +14,12 @@ from boltzmann import Boltzmann
 
 
 def train_agent_on_env(agent, env, n_epochs):
+    rolling_average = deque([], maxlen=100)
     for epoch in (pbar := tqdm(range(n_epochs), desc="Epochs", position=0)):
         reward = perform_an_episode(agent, env)
-        pbar.set_postfix({"last_reward": reward})
+
+        rolling_average.appendleft(reward)
+        pbar.set_postfix({"last_reward": reward, "avg_100": np.mean(rolling_average)})
         yield reward
 
 
