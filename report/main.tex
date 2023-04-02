@@ -30,6 +30,9 @@
 % Therefore, a short form for the running title is supplied here:
 \icmltitlerunning{Reinforcement Learning 2023 Assignment 2}
 
+\widowpenalty=10000
+\clubpenalty=10000
+
 \begin{document}
 
 \twocolumn[
@@ -124,15 +127,15 @@ where, $s \in S$ where $S$ represents the set of all the possible states and $q$
 
 
 The remaining chapters are structured as follows.
-In \autoref{sec:methodology}, the underlying theories regarding the separate approaches will be shown.
-The \autoref{sec:results} is dedicated to the discussion of the optimal configuration for the hyperparameters tuned on the DQN architecture, which exploits the advantages of replay buffer and target network.
-In this portion of the report the parameters are tweaked individually, which places this unit at the opposite end of the \autoref{sec:bonus}.
-Thereupon, this section is dedicated to study the relationship that each hyperparameter has with the others.
+In \autoref{sec:background}, the underlying concepts regarding the separate approaches will be shown.
+Following that, the results from an actual implementation of these concepts are shown in \autoref{sec:results}. 
+That section primarily investigates the influence of individual hyperparameters on the performance of the agent.
+Afterwards, a comprehensive hyperparameter scan is conducted to study the relationship between hyperparameters in \autoref{sec:bonus}.
 Finally, in \autoref{sec:discussion} the results are summarized and insights into what could have been improved are given.
 
 
-\section{Methodology}
-\label{sec:methodology}
+\section{Background}
+\label{sec:background}
 This section will examine methods used to solve the cart pole balancing problem.
 Ideally, the problem would be solved with the Q-learning method, since it is easy to implement and interpret.
 However, due to continuous state space it is not possible to store a $Q(s,a)$ value for every state-action pair.
@@ -142,7 +145,7 @@ Secondly, the DQN method will be improved with experience replay and a target ne
 
 \subsection{DQN}
 \label{subsec:dqn}
-DQN is one of the most known deep reinforcement learning algorithms.
+Deep Q Learning (DQN) is one of the most known deep reinforcement learning algorithms.
 It is based on the tabular Q-learning method, but instead of obtaining the $Q$ value from a table,
 a neural network is trained (the parameters are adjusted) to predict the values given a certain state.
 A neural network is a machine learning structure that contains a large amount of parameters that can be tuned
@@ -235,7 +238,7 @@ The weights of the network that predicts the target change after every optimizat
 The problems posed in the previous paragraph can not be fully solved, but it is possible to minimize their impact.
 Firstly, the problem of low coverage can be improved by setting a high probability of taking an exploratory step.
 The higher the probability, the higher amount of state space the algorithm will explore.
-Secondly, the high correlation problem can be improved by implementing a replay buffer, which is described in \autoref{subsec:experience-replay}.
+Secondly, the high correlation problem can be improved by implementing experience replay, which is described in \autoref{subsec:experience-replay}.
 Thirdly, a secondary neural network that is updated less frequently can be implemented and used only for target predictions.
 This approach is called target network and is explained in \autoref{subsec:target-network}
 Finally, the learning can be stabilized by setting a very low learning rate $\alpha$ that will minimize the change between
@@ -243,15 +246,15 @@ subsequent target predictions.
 
 \subsection{Experience Replay}
 \label{subsec:experience-replay}
-Plain DQN algorithm suffers from high correlation between subsequent states.
-This means that the agent frequently visits same states and makes similar actions,
+The plain DQN algorithm suffers from high correlation between subsequent states, e.g., if the agent performs good and the environment does not change much.
+This means that the agent frequently visits similar states and makes similar actions,
 and consequently trains the neural network on very similar samples.
-What is more, because of bootstrapping and function approximation the algorithm can forget some useful behaviour that it learned in the past.
-This can lead to overfitting, instability in the training process, and consequently poor generalization.
+What is more, because of bootstrapping and function approximation, the algorithm can forget some useful behaviour that it learned in the past.
+This can lead to overfitting, instability in the training process and consequently poor generalization.
 Moreover, it may also fail to cover a significant amount of state space and get stuck
 in the local optima because of this.
-To break the correlation one can make use of a concept called experience replay (ER).
-The ER adds a replay buffer, a buffer that stores experiences, that can be used to break the correlation.
+To break the correlation, one can make use of a concept called experience replay (ER).
+The ER adds a replay buffer, a buffer that stores experiences in the form of $T=(state, action, reward, next\_state)$ transition tuples, that can be used to break the correlation.
 Using this, the DQN agent no longer needs to learn from subsequent experiences, as it can obtain random samples
 from the replay buffer and learn from them instead.
 Breaking the correlation between subsequent samples improves coverage and generalization of the algorithm~\cite{DBLP:books/sp/Plaat22}.
@@ -260,16 +263,16 @@ that are still very relevant for the task.
 
 \subsection{Target Network}
 \label{subsec:target-network}
-In order to improve the stability of learning and reduce the divergence cause by frequent weight updates,
+In order to improve the stability of learning and reduce the divergence caused by frequent weight updates,
 a target network can be introduced~\cite{DBLP:books/sp/Plaat22}.
 Target network (TN) $\hat Q$ is a new neural network that the algorithm will use to output the target values.
 The newly added network is structurally a copy of the value network $Q$, but it gets updated every $n$ steps
 by copying the parameters of the neural network $Q$ that is used for action selection ($\hat Q = Q$).
-That way the target predictions remain stable for a longer period of time.
+That way, the target predictions remain stable for a longer period of time.
 To calculate the target value, the \autoref{eq:calculating-target} can still be used, however, instead of using the $Q_\theta$
-neural network it needs to bo replaced with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
+neural network it needs to be replaced with $Q_{\theta - i}$ neural network where $\theta - i$ stands for the parameters
 which were used $i$ steps ago.
-In this case variable $i$ stands for the number of time steps since the target neural network $\hat Q$ was last updated.
+In this case, the variable $i$ stands for the number of time steps since the target neural network $\hat Q$ was last updated.
 After every $n$ steps, the $\hat Q_{\theta - i}$ is updated, making the variable $i$ equal to 0 and $\hat Q_{\theta - i}$
 equal to $Q_\theta$.
 
