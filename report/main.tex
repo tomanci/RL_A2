@@ -439,19 +439,25 @@ In this experiment, no significant differences could be found with respect to th
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
-In this subscetion we ablation study is performed \autoref{fig:ablation_study}. 
-After having found the best configuration for the hyperparameters, we are comparing the different solutions to improve the DQN algorithm.\\
-The plain approach, where both Experience Replay and Target Network have been disabled, records the worst performances, unsurprisingly. 
-Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{subsec:dqn}.\\
-The third approach in term of goodness of the model is the DQN algorithm which has only the target network activated. 
-This solution aims to reduce the divergence, which is one of the elements of the deadly trio. \\
-A possible explanation as to why the model with only the target network only slightly outperforms the basic model lies in parameter tuning. 
-In our opinion, the values found were taken on the basis of the model with both the target network and the replay buffer active and were not optimal in this configuration. \\
-The model that has the replay buffer active manages to achieve a decent performance. By having a buffer size of $10000$ we are able to effectively reduce the dependency between two successive states \cite{DBLP:books/sp/Plaat22}. 
-It should be noted that compared to the previous models, the latter two have a very slow initial training phase and only after many epochs manage to pass the threshold.\\
-Finally, the final analysis focuses on the last model. The data collected reinforce the theoretical foundations studied during the course. 
-In fact, it is evident how the joint combination of the replay buffer and the target network succeeds in limiting the harmful effects of the deadly triad -  \cite{DBLP:books/sp/Plaat22} and \autoref{subsec:dqn}. 
-In fact, despite a slight stochastic phase in which the total reward per epoch is lower than in the model with only the replay buffer active, the complete model visibly performs better. \\
+In this section, the ablation study is performed, and the results are displayed in the \autoref{fig:ablation_study}.
+The parameters used for all of the configurations were the ones identified as the best parameters for the DQN\@.
+The plain approach (DQN-ER-TN), where both experience replay and target network have been disabled, performs the worst.
+Plain DQN suffers from the three problems explained in \autoref{subsec:dqn} that cause unstable learning, forgetfulness,
+and low state-space coverage.
+Because of this it performs the worst.
+The plain DQN is followed closely by DQN-ER in terms of performance.
+DQN-ER is slightly better, however it still suffers from high correlation that leads to overfitting and possibility to
+get stuck in the local optimum.
+Nevertheless, it still improves the plain DQN by minimizing the divergence problem.
+The model with only the episode replay enabled shows substantial improvements as it solves the issue of high correlation.
+The final DQN model performs the best, it achieves the highest average reward, and the highest reward at the end
+(albeit with a small margin).
+This also shows that using combining target network and episode replay improvements works well and improves
+the overall performance of the model, which is also confirmed in the book~\cite{DBLP:books/sp/Plaat22}.
+One thing that can be noted from this experiment is the slower initial training progress of the models with the episode
+replay enabled.
+This could caused by the fact that it takes longer to randomly sample terminal states (especially with smaller batch sizes)
+from the replay buffer, which are crucial for learning.
 
 \begin{figure}[ht!]
    \centering
