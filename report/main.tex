@@ -276,13 +276,13 @@ equal to $Q_\theta$.
 
 \section{Results}
 \label{sec:results}
-This section presents the results obtained by tuning the most important hyper-parameters individually. 
-In the \autoref{dqn-ablation-study}, the effect of experience replay and a target network are investigated.
-In order to have a common baseline for comparisons, a set of hyper-parameters was defined as shown in \autoref{tbl:baseline_config}. 
+This section presents the results obtained by tuning the most important hyperparameters individually. 
+In \autoref{dqn-ablation-study}, the effect of experience replay and a target network are investigated.
+In order to have a common baseline for comparisons, a set of hyperparameters was defined as shown in \autoref{tbl:baseline_config}. 
 These values will be used throughout this section, if not mentioned otherwise explicitly.
 The values were chosen based on prior experiments and experience.
 To account for the inherent randomness in our experiments,
-we decided to run each combination of hyper-parameters five times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
+we decided to run each combination of hyperparameters five times as a compromise between statistical significance and the computational power required to perform the experiments. The same number of repetitions is done in every plot of this section if not mentioned otherwise.\\
 To express the confidence in our results, the graphs are portrayed the mean value - bold line- and the standard deviation - the faded interval surrounding the mean value.   
 
 \begin{table}[ht]
@@ -389,7 +389,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
    The one that turns out to be the best is $\epsilon$ = $0.1$.\\
    A completely different discussion applies to the study of the optimal temperature parameter \autoref{comp_temp}. 
    In this case, the only parameter we can use as a discriminant is the value of moves we obtain at the end of the episodes. 
-   According to our metric, the best value for the hyper-parameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
+   According to our metric, the best value for the hyperparameter is equal to $1$. Under this assumption, the Boltzmann function becomes the softmax function. 
 
    %TODO: HOW TO CREATE TWO FIGURE IN THE SAME IMAGE
    % We should only put them into the same figure if that figure spans both columns. Otherwise the images will be too small.
@@ -414,7 +414,7 @@ After all, we deem $5 \cdot 10^{-4}$ to achieve the best performance out of the 
 
 \subsection{DQN ablation study}
 \label{subsec:dqn-ablation-study}
-In this subscetion we ablation study is performed \autoref{fig_ablation}. After having found the best configuration for the hyper-parameters, we are comparing the different solutions to improve the DQN algorithm.\\
+In this subscetion we ablation study is performed \autoref{fig_ablation}. After having found the best configuration for the hyperparameters, we are comparing the different solutions to improve the DQN algorithm.\\
 The plain approach, where both Experience Replay and Target Network have been disabled, records the worst performances, unsurprisingly. 
 Our reasoning brought us to indicate as the deadly triad, confirming the theory already expressed in \cite{DBLP:books/sp/Plaat22} and \autoref{dqn}.\\
 The third approach in term of goodness of the model is the DQN algorithm which has only the target network activated. 
